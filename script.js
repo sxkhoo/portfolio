@@ -94,6 +94,16 @@ function endDrag() {
 addEventListener('pointerup', endDrag, { passive: true });
 addEventListener('pointercancel', endDrag, { passive: true });
 track.addEventListener('click', e => { if (suppressClick) { e.stopPropagation(); e.preventDefault(); } }, true);
+// trackpad / mouse horizontal swipe — two-finger glide
+let wheelLock = false;
+document.querySelector('.viewport').addEventListener('wheel', e => {
+  if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return; // vertical → panel scroll
+  e.preventDefault();
+  if (wheelLock) return;
+  wheelLock = true;
+  goTo(idx + (e.deltaX > 0 ? 1 : -1));
+  setTimeout(() => { wheelLock = false; }, 1100);
+}, { passive: false });
 // all in-page anchors glide instead of scrolling
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
@@ -113,6 +123,7 @@ addEventListener('hashchange', () => fromHash(false));
 // method: keep short (V60, AeroPress, French Press, Kalita, Chemex, Espresso…)
 const COFFEES = [
   { name: "Terraform ALO AW33", origin: "Lot AW33", method: "V60", notes: "First brew in the log.", rating: 0 },
+  { name: "Terraform RUMUDAMO", origin: "RUMUDAMO", method: "V60", notes: "Second brew in the log.", rating: 0 },
 ];
 
 // Brew log render + method filter

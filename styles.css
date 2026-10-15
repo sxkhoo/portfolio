@@ -320,6 +320,26 @@ body{overflow:hidden}
 #trade .wrap{position:relative;z-index:1}
 @media(prefers-reduced-motion:reduce){#ticks{display:none}}
 
+/* TRADE CARDS — mini boxes in one row */
+#trade .trade-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#trade .trade-card{padding:16px}
+#trade .trade-card h4{font-size:.98rem;margin:6px 0 2px}
+#trade .trade-card .small{font-size:.82rem}
+#trade .trade-icon{width:32px;height:32px;border-radius:10px}
+#trade .trade-icon svg{width:19px;height:19px}
+#trade .spark{height:22px;margin:4px 0 6px}
+@media(max-width:700px){#trade .trade-grid{grid-template-columns:1fr}}
+.trade-grid .trade-card:hover{transform:translateY(-4px)}
+.trade-grid .trade-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+.tc-orange::before{background:linear-gradient(90deg,#FF7A00,#FFB25E)}
+.tc-gold::before{background:linear-gradient(90deg,#C9930A,#F0C93E)}
+.tc-green::before{background:linear-gradient(90deg,#0E7A4F,#4CC38A)}
+.tc-orange{--ink2:#FF7A00}.tc-gold{--ink2:#C9930A}.tc-green{--ink2:#0E7A4F}
+.trade-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.trade-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--ink2);background:color-mix(in srgb,var(--ink2) 12%,transparent)}
+.trade-icon svg{width:24px;height:24px}
+.spark{width:100%;height:30px;margin:6px 0 8px;opacity:.9}
+
 /* SNAPSHOT GRID */
 .snap-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:20px}
 .snap-grid h4{margin:0 0 8px}
