@@ -322,6 +322,8 @@ body{overflow:hidden}
 
 /* TRADE CARDS — mini boxes in one row */
 #trade .trade-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#trade .trade-card{position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease}
+#trade .trade-card:hover{transform:translateY(-4px)}
 #trade .trade-card{padding:16px}
 #trade .trade-card h4{font-size:.98rem;margin:6px 0 2px}
 #trade .trade-card .small{font-size:.82rem}
