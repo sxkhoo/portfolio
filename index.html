@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Khoo Shi Xian — Computer Engineering | Vision AI & ML</title>
+<meta name="description" content="Khoo Shi Xian — Computer Engineering @ NUS. Vision AI, ML, embedded. Malaysian in Singapore." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,500;9..144,0,600;1..144,0,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◍</text></svg>" />
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="nav" id="top">
+  <div class="nav-inner">
+    <a href="#top" class="logo">KSX<span class="dot">.</span></a>
+    <nav class="links" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#coffee">Coffee</a>
+      <a href="#about">About</a>
+      <a href="#contact" class="cta-small">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <button id="themeToggle" class="icon-btn" aria-label="Toggle dark mode" title="Toggle theme">
+        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <button id="menuBtn" class="icon-btn menu-only" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#work">Work</a>
+    <a href="#coffee">Coffee</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+</header>
+
+<main class="viewport">
+<div class="track" id="track">
+<!-- HERO: compact, photo right -->
+<section class="hero compact world world-orbit" id="home">
+  <div class="hero-bg" aria-hidden="true"><canvas id="nano"></canvas><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="grid-lines"></div></div>
+  <div class="wrap hero-split">
+    <div>
+      <p class="eyebrow reveal"><span class="pulse"></span> Open to internships · Singapore / Remote</p>
+      <h1 class="reveal d1">Khoo Shi Xian</h1>
+      <p class="subtitle reveal d2">Computer Engineering @ NUS · Vision AI & ML</p>
+      <p class="lede reveal d3">I build <strong>machines that can see</strong> — circuit-board inspection on NVIDIA Jetson, starfish detection with YOLO. Malaysian in Singapore. Basketball on weekends, ML papers on weeknights.</p>
+      <div class="hero-cta reveal d4">
+        <a href="#work" class="btn primary">Explore my work ↓</a>
+        <a href="#contact" class="btn ghost">Get in touch</a>
+      </div>
+    </div>
+    <div class="hero-photo reveal d3">
+      <img src="pfp.jpg" alt="Khoo Shi Xian in front of snowy mountains" onerror="this.parentElement.classList.add('noimg');this.remove()" />
+      <div class="hero-photo-fallback"><p>Save your photo as<br /><code>pfp.jpg</code></p></div>
+      <div class="hero-badge">🇲🇾 → 🇸🇬<span>NUS · Tsinghua exchange</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK: interactive explorer, one thing at a time -->
+<section id="work" class="section tight world world-lab">
+  <div class="theme-glow tg-venture on" id="themeGlow" aria-hidden="true"></div>
+  <canvas id="workfx" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="kicker reveal">Work</p>
+    <h2 class="reveal">One spotlight <em>at a time.</em></h2>
+
+    <div class="explorer reveal">
+      <div class="exp-list" role="tablist" aria-label="Work">
+        <button class="exp-btn active" data-exp="venture" role="tab" aria-selected="true"><strong>Venture Corp</strong><span>Vision AI Intern · 2026</span></button>
+        <button class="exp-btn" data-exp="wizard" role="tab" aria-selected="false"><strong>Wizard Battle</strong><span>AR game · Capstone</span></button>
+        <button class="exp-btn" data-exp="starfish" role="tab" aria-selected="false"><strong>Starfish Detection</strong><span>Tsinghua research</span></button>
+        <button class="exp-btn" data-exp="studyjio" role="tab" aria-selected="false"><strong>StudyJio</strong><span>Web app · Apollo 11</span></button>
+      </div>
+      <div class="exp-panel" id="expPanel" role="tabpanel">
+        <div class="exp-pane active" data-pane="venture">
+          <div class="pane-art" aria-hidden="true">
+            <svg viewBox="0 0 140 120"><rect x="22" y="52" width="10" height="18" rx="5" fill="#B9CBFF" stroke="#2547F4" stroke-width="3"/><rect x="108" y="52" width="10" height="18" rx="5" fill="#B9CBFF" stroke="#2547F4" stroke-width="3"/><rect x="30" y="30" width="80" height="62" rx="18" fill="#DCE6FF" stroke="#2547F4" stroke-width="3"/><line x1="70" y1="30" x2="70" y2="16" stroke="#2547F4" stroke-width="3" stroke-linecap="round"/><circle cx="70" cy="12" r="5" fill="#FF6B6B"/><circle cx="56" cy="58" r="9" fill="#fff" stroke="#141310" stroke-width="3"/><circle cx="58.5" cy="55.5" r="3" fill="#141310"/><circle cx="84" cy="58" r="9" fill="#fff" stroke="#141310" stroke-width="3"/><circle cx="86.5" cy="55.5" r="3" fill="#141310"/><path d="M62 76 Q70 82 78 76" stroke="#141310" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="46" cy="68" r="3.5" fill="#FF9EBB"/><circle cx="94" cy="68" r="3.5" fill="#FF9EBB"/><rect x="52" y="94" width="36" height="14" rx="7" fill="#B9CBFF" stroke="#2547F4" stroke-width="3"/><circle cx="126" cy="24" r="3" fill="#2547F4"/><circle cx="14" cy="22" r="2.5" fill="#2547F4"/><path d="M122 96 l3 6 6 3 -6 3 -3 6 -3 -6 -6 -3 6 -3 z" fill="#FFC53D"/></svg>
+          </div>
+          <h3>Factory machine that inspects circuit boards by itself</h3>
+          <p class="tldr">Turned scattered lab demos into <strong>one machine: photographs each board, spots defects with no labelled defect data, moves its own camera stage</strong> (Jetson Orin).</p>
+          <ul class="bullets small">
+            <li>DINOv2 golden-reference comparison — zero-shot defect finding</li>
+            <li>RapidOCR text read, alignment, auto-focus, SQLite logging</li>
+            <li>Face recognition pipeline (SCRFD + ArcFace + FAISS) ~5.6 FPS @ 720p on NXP + Hailo-8</li>
+          </ul>
+          <div class="pills"><span>Jetson Orin</span><span>DINOv2</span><span>Hailo-8</span><span>SQLite</span></div>
+        </div>
+        <div class="exp-pane" data-pane="wizard">
+          <div class="pane-art" aria-hidden="true">
+            <svg viewBox="0 0 140 120"><path d="M70 8 L96 78 L44 78 Z" fill="#7C3AED" stroke="#4C1D95" stroke-width="3" stroke-linejoin="round"/><ellipse cx="70" cy="82" rx="44" ry="12" fill="#5B21B6" stroke="#4C1D95" stroke-width="3"/><rect x="55" y="62" width="30" height="10" fill="#FFC53D"/><circle cx="60" cy="46" r="4.5" fill="#141310"/><circle cx="80" cy="46" r="4.5" fill="#141310"/><path d="M63 58 Q70 64 77 58" stroke="#141310" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="52" cy="54" r="3.5" fill="#F0ABFC"/><circle cx="88" cy="54" r="3.5" fill="#F0ABFC"/><path d="M70 8 l2.5 6 6 2.5 -6 2.5 -2.5 6 -2.5 -6 -6 -2.5 6 -2.5 z" fill="#FFE45E"/><line x1="104" y1="92" x2="126" y2="52" stroke="#8B5E34" stroke-width="5" stroke-linecap="round"/><path d="M126 40 l4 8 8 4 -8 4 -4 8 -4 -8 -8 -4 8 -4 z" fill="#FFE45E" stroke="#EAB308" stroke-width="2"/><circle cx="112" cy="70" r="2.5" fill="#E9D5FF"/><circle cx="34" cy="30" r="2.5" fill="#C4B5FD"/><circle cx="24" cy="66" r="3" fill="#DDD6FE"/></svg>
+          </div>
+          <h3>Real-life spell-casting — flick your wrist, cast a spell</h3>
+          <p class="tldr">4-player AR duelling game. I own the <strong>wearable sensors</strong>: ESP32 + IMU streams motion, gestures classified on Ultra96-V2 FPGA.</p>
+          <ul class="bullets small">
+            <li>FireBeetle ESP32 wearables, wireless, 4 simultaneous players</li>
+            <li>FPGA fabric for low-latency gesture classification</li>
+          </ul>
+          <div class="pills"><span>ESP32</span><span>IMU</span><span>FPGA</span></div>
+        </div>
+        <div class="exp-pane" data-pane="starfish">
+          <div class="pane-art" aria-hidden="true">
+            <svg viewBox="0 0 140 120"><path d="M70 30 C74 22 84 20 88 26 C92 32 86 38 90 44 C94 50 104 50 104 58 C104 66 94 68 92 74 C90 80 94 90 86 92 C78 94 74 86 70 86 C66 86 62 94 54 92 C46 90 50 80 48 74 C46 68 36 66 36 58 C36 50 46 50 50 44 C54 38 48 32 52 26 C56 20 66 22 70 30 Z" fill="#FF9E5E" stroke="#E2642B" stroke-width="3" stroke-linejoin="round"/><circle cx="58" cy="52" r="10" fill="#FFD9B3"/><circle cx="82" cy="52" r="10" fill="#FFD9B3"/><circle cx="62" cy="58" r="4.5" fill="#141310"/><circle cx="78" cy="58" r="4.5" fill="#141310"/><path d="M64 70 Q70 76 76 70" stroke="#141310" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="54" cy="66" r="3.5" fill="#FF6B6B"/><circle cx="86" cy="66" r="3.5" fill="#FF6B6B"/><circle cx="30" cy="100" r="2.5" fill="#2DD4BF"/><circle cx="112" cy="100" r="3" fill="#2DD4BF"/><circle cx="120" cy="88" r="2" fill="#06B6D4"/><circle cx="22" cy="86" r="2" fill="#06B6D4"/><path d="M18 108 q4 -10 0 -20 M28 110 q-4 -10 0 -20" stroke="#2E9E6B" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M116 110 q4 -10 0 -20 M126 110 q-4 -10 0 -20" stroke="#2E9E6B" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Counting invasive starfish to save the reef</h3>
+          <p class="tldr">23,500 underwater frames. <strong>YOLOv5n vs YOLOv11n</strong> — image size mattered most (F2 0.058 → 0.321). Older model won at defaults.</p>
+          <ul class="bullets small">
+            <li>Rejected: Florence-2 auto-labelling, SAHI tiling, ByteTrack, augmentation sweeps</li>
+            <li>Lesson: resolution &gt; architecture tweaks for tiny objects</li>
+          </ul>
+          <div class="pills"><span>YOLO</span><span>PyTorch</span><span>OpenCV</span></div>
+        </div>
+        <div class="exp-pane" data-pane="studyjio">
+          <div class="pane-art" aria-hidden="true">
+            <svg viewBox="0 0 140 120"><rect x="18" y="82" width="76" height="18" rx="4" fill="#E2642B" stroke="#8A3B12" stroke-width="3"/><rect x="24" y="64" width="66" height="18" rx="4" fill="#3B82F6" stroke="#1D4ED8" stroke-width="3"/><rect x="20" y="46" width="72" height="18" rx="4" fill="#22A06B" stroke="#136F47" stroke-width="3"/><line x1="32" y1="55" x2="80" y2="55" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><line x1="36" y1="73" x2="78" y2="73" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><line x1="30" y1="91" x2="82" y2="91" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><circle cx="46" cy="38" r="4" fill="#141310"/><circle cx="62" cy="38" r="4" fill="#141310"/><rect x="98" y="66" width="26" height="30" rx="5" fill="#fff" stroke="#8A5A2B" stroke-width="3"/><path d="M98 74 q6 -5 13 0 q7 5 13 0" stroke="#B07A3F" stroke-width="2.5" fill="none"/><circle cx="108" cy="84" r="3" fill="#141310"/><circle cx="118" cy="84" r="3" fill="#141310"/><path d="M109 91 q4 3 8 0" stroke="#141310" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M124 74 q8 1 5 9 q-2 6 -9 5" stroke="#8A5A2B" stroke-width="3" fill="none"/><path d="M106 58 q3 -6 0 -12 M114 58 q-3 -6 0 -12" stroke="#C9A227" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".6"/></svg>
+          </div>
+          <h3>Discord for study groups</h3>
+          <p class="tldr">Real-time study rooms with Django + PostgreSQL + Channels over Redis. <strong>Apollo 11 (Advanced)</strong> — programme's 2nd-highest tier.</p>
+          <div class="pills"><span>Django</span><span>PostgreSQL</span><span>Redis</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="muted small reveal" style="margin-top:12px">Also built: FPGA OLED mini-game (Verilog) · Java CLI chatbot — happy to talk about them, kept off this page to stay short.</p>
+  </div>
+</section>
+
+<!-- COFFEE: brew log -->
+<section id="coffee" class="section tight world world-roast">
+  <canvas id="brew" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="kicker reveal">Filter coffee</p>
+    <h2 class="reveal">Brew log</h2>
+    <div class="brew-filters reveal" id="brewFilters" role="tablist" aria-label="Filter by method"></div>
+    <div class="brew-grid reveal" id="brewGrid"></div>
+  </div>
+</section>
+
+<!-- TRADE -->
+<section id="trade" class="section tight world world-trade">
+  <canvas id="ticks" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="kicker reveal">Trading</p>
+    <h2 class="reveal">Market <em>hours.</em></h2>
+    <div class="snap-grid">
+      <div class="card reveal"><span class="brew-method">Moomoo</span><h4>Equities</h4><p class="small muted">Since Oct 2024</p><p class="small">Deep dives and primers into AI bottleneck companies — irreplaceable positioning, strong balance sheets.</p></div>
+      <div class="card reveal"><span class="brew-method">Binance</span><h4>Crypto</h4><p class="small muted">Since Nov 2024</p><p class="small">Mainly Bitcoin futures. Smaller size, strict risk limits.</p></div>
+      <div class="card reveal"><h4>Focus</h4><p class="small">Equity research, macro news, journaling every trade. Process over P&L — student account, learning first.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT: one compact band -->
+<section id="about" class="section tight alt world world-high">
+  <div class="wrap">
+    <p class="kicker reveal">About</p>
+    <h2 class="reveal">Quick snapshot</h2>
+    <div class="snap-grid">
+      <div class="card reveal"><h4>Background</h4><p class="small">Malaysia → Singapore. NUS Computer Engineering + Quant Finance minor. Tsinghua exchange (CS). Venture Corp Vision AI intern. Basketball, filter coffee, guitar, running.</p></div>
+      <div class="card reveal"><h4>Toolbox</h4><div class="pills"><span>Python</span><span>C/C++</span><span>PyTorch</span><span>YOLO</span><span>OpenCV</span><span>Jetson</span><span>Hailo-8</span><span>ESP32</span><span>Django</span><span>Git</span></div><p class="small muted">Speaks English · Mandarin · Malay · Cantonese</p></div>
+      <div class="card reveal"><h4>Education</h4><p class="small"><strong>NUS</strong> 2023–2027 · B.Eng CE + QF minor<br /><strong>Tsinghua</strong> Sep 2025–Jan 2026 · Exchange</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section tight contact world world-night">
+  <div class="wrap center">
+    <p class="kicker reveal">Contact</p>
+    <h2 class="reveal">Let's build something<br />that <em>sees.</em></h2>
+    <div class="hero-cta reveal">
+      <a class="btn primary" href="mailto:khooshixian@gmail.com">khooshixian@gmail.com</a>
+      <a class="btn ghost" href="https://linkedin.com/in/khoo-shi-xian" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
+    <p class="muted small reveal">+65 8885 3806 · Singapore · replies within a day</p>
+  </div>
+  <div class="wrap foot foot-in">
+    <span>© 2026 Khoo Shi Xian · Short, on purpose.</span>
+    <button id="toTop" class="to-top" aria-label="Back to start">↑ Start</button>
+  </div>
+</section>
+</div><!-- /track -->
+<nav class="journey" aria-label="Section journey">
+  <a href="#home" data-j="home"><span class="j-dot"></span><span class="j-label">Launch</span></a>
+  <a href="#work" data-j="work"><span class="j-dot"></span><span class="j-label">Lab</span></a>
+  <a href="#coffee" data-j="coffee"><span class="j-dot"></span><span class="j-label">Roast</span></a>
+  <a href="#trade" data-j="trade"><span class="j-dot"></span><span class="j-label">Trade</span></a>
+  <a href="#about" data-j="about"><span class="j-dot"></span><span class="j-label">Base</span></a>
+  <a href="#contact" data-j="contact"><span class="j-dot"></span><span class="j-label">Signal</span></a>
+</nav>
+<button id="prevBtn" class="glide-btn" aria-label="Previous section">←</button>
+<button id="nextBtn" class="glide-btn" aria-label="Next section">→</button>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
