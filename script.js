@@ -177,16 +177,27 @@ const COFFEES = [
   }
   size();
   addEventListener('resize', size);
+  const mouse = { x: -9999, y: -9999 };
+  section.addEventListener('mousemove', e => {
+    const r = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
+  }, { passive: true });
+  section.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
   let t = 0;
   (function draw() {
     t += 0.02;
     const c = theme();
     ctx.clearRect(0, 0, w, h);
+    const hotAt = (x, y) => {
+      const d = Math.hypot(x - mouse.x, y - mouse.y);
+      return d < 150 ? 1 - d / 150 : 0;
+    };
     for (const s of steam) { // heat wisps
       s.y -= s.v;
       if (s.y < -s.len) { s.y = h + 20; s.x = Math.random() * w; }
-      ctx.strokeStyle = `rgba(${c.c},0.10)`;
-      ctx.lineWidth = 5;
+      const hot = hotAt(s.x, s.y);
+      ctx.strokeStyle = `rgba(${c.c},${0.10 + hot * 0.22})`;
+      ctx.lineWidth = 5 + hot * 3;
       ctx.beginPath();
       for (let y = 0; y < s.len; y += 6) {
         const x = s.x + Math.sin(t * 2 + s.ph + y * 0.05) * 9;
@@ -197,14 +208,20 @@ const COFFEES = [
     for (const b of bubbles) { // rising crema bubbles
       b.y -= b.v; b.x += Math.sin(t + b.wob) * 0.2;
       if (b.y < -8) { b.y = h + 8; b.x = Math.random() * w; }
-      ctx.strokeStyle = `rgba(${c.c},0.35)`;
-      ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 7); ctx.stroke();
+      const dx = b.x - mouse.x, dy = b.y - mouse.y, d = Math.hypot(dx, dy);
+      if (d < 140 && d > 0.1) { b.x += (dx / d) * 0.6; b.y += (dy / d) * 0.6; }
+      const hot = hotAt(b.x, b.y);
+      ctx.strokeStyle = `rgba(${c.c},${0.35 + hot * 0.4})`;
+      ctx.lineWidth = 1 + hot;
+      ctx.beginPath(); ctx.arc(b.x, b.y, b.r + hot * 1.5, 0, 7); ctx.stroke();
     }
     for (const d of drops) { // falling droplets with splash stretch
       d.y += d.v; d.x += Math.sin(t * 2 + d.wob) * 0.3;
       if (d.y > h + 8) { d.y = -8; d.x = Math.random() * w; }
-      ctx.fillStyle = `rgba(${c.c},0.4)`;
+      const ddx = d.x - mouse.x, ddy = d.y - mouse.y, dd = Math.hypot(ddx, ddy);
+      if (dd < 140 && dd > 0.1) { d.x += (ddx / dd) * 0.8; d.y += (ddy / dd) * 0.8; }
+      const hot = hotAt(d.x, d.y);
+      ctx.fillStyle = `rgba(${c.c},${0.4 + hot * 0.35})`;
       ctx.beginPath();
       ctx.ellipse(d.x, d.y, d.r * 0.7, d.r * (1 + d.v * 0.35), 0, 0, 7);
       ctx.fill();
@@ -221,7 +238,7 @@ const COFFEES = [
   if (!canvas || !section) return;
   const ctx = canvas.getContext('2d');
   let w = 0, h = 0, candles = [], price = 0.5;
-  const CW = 14;
+  const CW = 11;
   function theme() {
     return document.documentElement.getAttribute('data-theme') === 'dark'
       ? { up: '46,200,130', dn: '255,110,110' } : { up: '14,122,79', dn: '200,60,60' };
@@ -245,7 +262,7 @@ const COFFEES = [
   let frame = 0;
   (function draw() {
     frame++;
-    if (frame % 22 === 0) { // drift one candle
+    if (frame % 9 === 0) { // drift one candle
       price += (Math.random() - 0.5) * 0.08;
       price = Math.min(0.85, Math.max(0.15, price));
       const o = candles.length ? candles[candles.length - 1].c : price;
