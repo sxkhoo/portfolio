@@ -176,6 +176,14 @@ html.js #scan{display:block;position:fixed;left:0;right:0;top:0;height:2px;z-ind
   .secbar .zx{display:none}
   .chips{max-width:calc(100vw - 32px);overflow-x:auto}
 }
+/* short, wide screens (laptop browsers, 1200x630 previews): the desk fills the height,
+   so the furniture around it gets smaller; the → SECTION labels stand in for the hint */
+@media(max-height:700px) and (min-width:701px){
+  html.js .ident{bottom:30px}
+  html.js .name{font-size:34px;margin:8px 0 4px}
+  html.js .links{margin-top:6px}
+  html.js #hint,.hud-tl .dim{display:none}
+}
 @media(prefers-reduced-motion:reduce){
   .rec i{animation:none}
   .box,.box .fr,.box .go,#cur{transition:none}
