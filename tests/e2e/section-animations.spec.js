@@ -20,7 +20,7 @@ const covers = (page, key) => page.locator(`#${target(key)}`).evaluate(el => {
 
 const baseline = page => page.evaluate(() => {
   const selectors = ['#anim-laptop', '#screen-glow', '#code', '#anim-v60', '#tilt-v60',
-    '#v60-top', '#v60-side', '#v60-body', '#v60-body-shade', '#v60-empty', '#z-v60', '#bloom',
+    '#v60-saucer', '#v60-handle', '#v60-top', '#v60-side', '#v60-body', '#v60-empty', '#z-v60', '#bloom',
     '#spill', '#coffee-puddle', '#coffee-stream', '#coffee-drops', '#anim-phone',
     '#candles', '#vol', '#anim-polaroid', '#photo', '#anim-envelope', '#letter', '#flap'];
   const rect = el => {
@@ -57,6 +57,8 @@ const sample = (page, key) => page.evaluate(section => new Promise(resolve => {
         parseFloat(getComputedStyle(document.getElementById('coffee-stream')).strokeDashoffset),
         getComputedStyle(document.getElementById('spill')).display !== 'none',
         face.a * face.d - face.b * face.c, opacity('v60-side'), opacity('z-v60')];
+      const plate = document.getElementById('v60-saucer').getBoundingClientRect();
+      value.push([plate.x, plate.y, plate.width, plate.height]);
     }
     if (section === 'trade') value = [matrix('anim-phone').f, matrix('candles').d];
     if (section === 'about') value = [matrix('anim-polaroid').b, opacity('photo')];
@@ -96,6 +98,10 @@ for (const [index, key] of ORDER.entries()) test(`${key} reacts before zoom, res
       expect(frames.some(frame => frame.value[0] < -50 && frame.value[4] < .35 && frame.value[5] > .5)).toBe(true);
       expect(frames.filter(frame => frame.value[4] > .95).every(frame => frame.value[2] >= .99)).toBe(true);
       expect(frames.some(frame => frame.value[6] < .4)).toBe(true);
+      // During the entire pre-zoom fall, the actual circular plate stays put.
+      const plate = frames[0].value[7];
+      expect(plate[2]).toBeCloseTo(plate[3], 1);
+      for (const frame of frames) for (let i = 0; i < 4; i++) expect(frame.value[7][i]).toBeCloseTo(plate[i], 1);
     }
     await expect(html(page)).toHaveAttribute('data-state', 'section');
     await expect(page.locator(`#${key}-h`)).toBeFocused();
@@ -107,7 +113,7 @@ for (const [index, key] of ORDER.entries()) test(`${key} reacts before zoom, res
       const rimGap = await page.evaluate(() => {
         const m = document.querySelector('#v60-top').transform.baseVal.getItem(0).matrix;
         const start = document.querySelector('#coffee-stream').getAttribute('d').match(/-?\d*\.?\d+/g).slice(0, 2).map(Number);
-        return Math.hypot(start[0] - (-90 * m.a + 52 * m.c + m.e), start[1] - (-90 * m.b + 52 * m.d + m.f));
+        return Math.hypot(start[0] - (-58 * m.a + 35 * m.c + m.e), start[1] - (-58 * m.b + 35 * m.d + m.f));
       });
       expect(rimGap).toBeLessThan(.1);
     }

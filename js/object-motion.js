@@ -1,7 +1,7 @@
 // Animate nested SVG groups; the outer obj-* transforms belong to layout.
 const PARTS = {
   work: ['#anim-laptop', '#screen-glow', '#code'],
-  coffee: ['#anim-v60', '#tilt-v60', '#v60-top', '#v60-side', '#v60-body', '#v60-body-shade', '#v60-empty', '#z-v60', '#bloom',
+  coffee: ['#anim-v60', '#tilt-v60', '#v60-handle', '#v60-top', '#v60-side', '#v60-body', '#v60-empty', '#z-v60', '#bloom',
     '#spill', '#coffee-stream', '#coffee-drops', '#coffee-puddle'],
   trade: ['#anim-phone', '#candles', '#vol'],
   about: ['#anim-polaroid', '#photo'],
@@ -15,24 +15,28 @@ export function createObjectMotion(gsap) {
   const point = p => `${n(p.x)} ${n(p.y)}`;
 
   function projectCup() {
-    // Project a tipping cylinder from above. Its mouth foreshortens along the
-    // fall direction while its side wall grows between the base and the rim.
+    // Only the smaller cup tips; its saucer is a separate, stationary sibling.
+    // Curved walls and a round heel connect the projected rim to the cup base.
     const dx = -.97, dy = Math.sqrt(1 - dx * dx), px = -dy, py = dx;
     const c = Math.cos(fall.angle), s = Math.sin(fall.angle);
     const a = 1 + (c - 1) * dx * dx, b = (c - 1) * dx * dy;
     const d = 1 + (c - 1) * dy * dy;
-    const base = { x: 12 * s, y: -5 * s };
-    const mouth = { x: base.x + dx * 110 * s, y: base.y + dy * 110 * s };
+    const base = { x: dx * 24 * s, y: dy * 24 * s };
+    const mouth = { x: base.x + dx * 88 * s, y: base.y + dy * 88 * s };
     $('v60-top').setAttribute('transform', `matrix(${n(a)} ${n(b)} ${n(b)} ${n(d)} ${point(mouth)})`);
     const edge = (center, radius, sign) => ({ x: center.x + px * radius * sign, y: center.y + py * radius * sign });
-    const top1 = edge(mouth, 104, -1), top2 = edge(mouth, 104, 1);
-    const bottom1 = edge(base, 76, -1), bottom2 = edge(base, 76, 1);
-    const cap = { x: base.x - dx * 28 * s, y: base.y - dy * 28 * s };
-    $('v60-body').setAttribute('d', `M${point(top1)}L${point(bottom1)}Q${point(cap)} ${point(bottom2)}L${point(top2)}Z`);
-    $('v60-body-shade').setAttribute('d', `M${point(mouth)}L${point(base)}Q${point(cap)} ${point(bottom2)}L${point(top2)}Z`);
+    const top1 = edge(mouth, 68, -1), top2 = edge(mouth, 68, 1);
+    const bottom1 = edge(base, 43, -1), bottom2 = edge(base, 43, 1);
+    const offset = (p, axis, side = 0) => ({ x: p.x + dx * axis + px * side, y: p.y + dy * axis + py * side });
+    $('v60-body').setAttribute('d', `M${point(top1)}C${point(offset(top1, -38 * s, -8 * s))} ${point(offset(bottom1, 16 * s))} ${point(bottom1)}C${point(offset(bottom1, -26 * s))} ${point(offset(bottom2, -26 * s))} ${point(bottom2)}C${point(offset(bottom2, 16 * s))} ${point(offset(top2, -38 * s, 8 * s))} ${point(top2)}Z`);
+    // A curved ceramic loop stays visible above the round wall as it rolls.
+    const blend = (p, q) => ({ x: p.x + (q.x - p.x) * Math.max(0, s), y: p.y + (q.y - p.y) * Math.max(0, s) });
+    const between = t => ({ x: top2.x + (bottom2.x - top2.x) * t, y: top2.y + (bottom2.y - top2.y) * t });
+    const h1 = between(.35), h2 = between(.75);
+    $('v60-handle').setAttribute('d', `M${point(blend({ x: 60, y: -22 }, h1))}C${point(blend({ x: 108, y: -34 }, offset(h1, 0, 35)))} ${point(blend({ x: 108, y: 34 }, offset(h2, 0, 35)))} ${point(blend({ x: 60, y: 22 }, h2))}`);
     // The stream starts on a fixed point of the moving lip, in desk-object
     // coordinates. Camera transforms therefore never detach it from the cup.
-    const lip = { x: mouth.x - 90 * a + 52 * b, y: mouth.y - 90 * b + 52 * d };
+    const lip = { x: mouth.x - 58 * a + 35 * b, y: mouth.y - 58 * b + 35 * d };
     $('coffee-stream').setAttribute('d', `M${point(lip)}C${n(lip.x - 14)} ${n(lip.y + 24)} -132 94 -142 108`);
     const t = fall.drop;
     const drop = { x: lip.x + (-142 - lip.x) * t, y: lip.y + (108 - lip.y) * t };
