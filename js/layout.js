@@ -26,7 +26,7 @@ export const LAYOUTS = {
   // tall screens: the same objects stacked, desk pinned to the top so the
   // name block at the bottom never covers them
   portrait: {
-    viewBox: [0, -110, 1000, 1900],
+    viewBox: [0, -200, 1000, 1990],
     aspect: 'xMidYMin meet',
     mat: [50, -50, 900, 1390],
     objects: {

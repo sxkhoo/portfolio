@@ -9,6 +9,7 @@ import { createSections } from './sections.js';
 import { createMotion } from './motion.js';
 import { initialState, reduce } from './state.js';
 import { parseHash, hashFor } from './router.js';
+import { getStorage, introSeen, markIntroSeen } from './storage.js';
 
 const html = document.documentElement;
 const $ = id => document.getElementById(id);
@@ -79,7 +80,7 @@ async function enter(prev, { mode, key, from }) {
   } else if (mode === 'desk') {
     boxes.lock(null);
     boxes.place(meas.objects, meas.viewport); // the opened box followed its object; put it back
-    await motion.reveal({ fast: true });
+    if (prev?.mode !== 'intro') await motion.reveal({ fast: true }); // the opening ends in its own reveal
     if (state.mode !== 'desk') return; // already moving again
     boxes.setInert(false);
     hud.cursor(true);
@@ -122,6 +123,57 @@ addEventListener('keydown', e => {
 
 addEventListener('hashchange', () => dispatch({ type: 'ROUTE', target: parseHash(location.hash) }));
 
+// ---- the opening
+
+const DESK_HINT = 'click an object to focus · 1–5';
+let photoOk = null, skipRequested = false, swallowClickAt = -Infinity;
+
+// fonts + photo, so the autofocus lands on something; never wait more than 2.5 s
+function preload() {
+  const img = new Image();
+  const loaded = new Promise(resolve => { img.onload = () => resolve(true); img.onerror = () => resolve(false); });
+  img.src = photo.getAttribute('href');
+  const cap = new Promise(resolve => setTimeout(() => resolve(false), 2500));
+  return Promise.race([Promise.all([loaded, document.fonts.ready]).then(([ok]) => ok), cap]);
+}
+
+async function runIntro(remember) {
+  state = initialState('intro');
+  html.dataset.state = 'intro';
+  html.dataset.intro = 'played';
+  boxes.setInert(true);
+  hud.cursor(false);
+  hud.setHint('click or any key → skip');
+  skipRequested = false;
+  photoOk ??= await preload();
+  const ready = motion.intro(meas, { photoOk });
+  if (skipRequested) motion.finish();
+  await ready;
+  if (remember) markIntroSeen(getStorage(window));
+  hud.setHint(DESK_HINT);
+  dispatch({ type: 'INTRO_DONE' });
+}
+
+// any key or press skips the opening — and is swallowed, so nothing underneath fires
+function skipIntro(e) {
+  if (state?.mode !== 'intro' || e.target.closest?.('#replay')) return;
+  e.preventDefault();
+  e.stopPropagation();
+  if (e.type === 'pointerdown') swallowClickAt = performance.now();
+  skipRequested = true;
+  motion.finish();
+}
+addEventListener('keydown', skipIntro, true);
+addEventListener('pointerdown', skipIntro, true);
+addEventListener('click', e => {
+  if (performance.now() - swallowClickAt > 600) return;
+  swallowClickAt = -Infinity;
+  e.preventDefault();
+  e.stopPropagation();
+}, true);
+
+$('replay').addEventListener('click', () => state.mode === 'desk' && runIntro(false));
+
 let resizeTimer;
 addEventListener('resize', () => {
   clearTimeout(resizeTimer);
@@ -139,9 +191,10 @@ history.scrollRestoration = 'manual';
 decorate(svg);
 fit();
 hud.setCount(boxes.elements().length);
-hud.setHint('click an object to focus · 1–5');
+hud.setHint(DESK_HINT);
 hud.start();
 html.dataset.intro = 'skipped';
+window.__vfBooted = true; // early.js keeps camera mode
 
 const deepLink = parseHash(location.hash);
 if (deepLink) {
@@ -152,12 +205,12 @@ if (deepLink) {
   boxes.setInert(true);
   motion.frame(deepLink, meas);
   sections.show(deepLink, 200);
+  html.classList.add('vf-ready');
+} else if (motion.animated && !introSeen(getStorage(window))) {
+  runIntro(true); // lifts the boot screen itself
 } else {
   state = initialState('desk');
   html.dataset.state = 'desk';
   enter(null, state);
+  html.classList.add('vf-ready');
 }
-
-// booted: early.js keeps camera mode, and the boot screen can lift
-window.__vfBooted = true;
-html.classList.add('vf-ready');

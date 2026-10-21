@@ -10,7 +10,8 @@ export const VIEWPORTS = [[1024, 768], [1366, 657], [1440, 900], [1920, 1080], [
 // open the site in a controlled way: no web fonts, GSAP served locally (byte-identical
 // to the pinned cdnjs build, so SRI still passes), optional blocks and motion setting
 export async function gotoVF(page, { hash = '', introSeen = false, speed = 1, reducedMotion = 'no-preference', blockGsap = false, blockPhoto = false } = {}) {
-  await page.route(/fonts\.(googleapis|gstatic)\.com/, r => r.abort());
+  // empty stylesheet rather than an abort, so blocked fonts don't log console errors
+  await page.route(/fonts\.(googleapis|gstatic)\.com/, r => r.fulfill({ status: 200, contentType: 'text/css', body: '' }));
   await page.route(/cdnjs\.cloudflare\.com\/ajax\/libs\/gsap\//, r => blockGsap
     ? r.abort()
     : r.fulfill({ path: GSAP_FILE, contentType: 'application/javascript', headers: { 'access-control-allow-origin': '*' } }));

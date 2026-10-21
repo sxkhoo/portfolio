@@ -1,7 +1,7 @@
 /* Camera mode. Everything here is scoped to html.js (set by js/early.js before
    first paint); without it the page is the plain document in site.css. */
 
-.cam,#boot,.boxes,#scan,.hud,.secbar{display:none}
+.cam,#boot,.boxes,#scan,.hud,.secbar,#af,#facebox,#replay{display:none}
 
 html.js,html.js body{height:100%;overflow:hidden;background:#000}
 html.js{--hud-dim:rgba(242,239,232,.62);--hud-faint:rgba(242,239,232,.28)}
@@ -147,6 +147,17 @@ html.js .boxes{display:block;position:fixed;inset:0;z-index:30;pointer-events:no
 .box.decor .fr{border-style:dashed;background:none}
 .box.lock{--c:var(--lock)!important}
 
+/* the opening: autofocus reticle and the face it locks onto */
+html.js #af{display:block;position:fixed;left:0;top:0;z-index:35;width:90px;height:90px;pointer-events:none;opacity:0}
+#af.lock{--tc:var(--lock)}
+#af .af-lbl{position:absolute;left:0;top:-18px;font:700 10px/1 var(--mono);letter-spacing:.12em;color:var(--tc)}
+html.js #facebox{display:block;position:fixed;z-index:35;pointer-events:none;--c:var(--lock)}
+
+/* replay the opening: desk only */
+html.js #replay{display:block;position:fixed;top:64px;right:80px;z-index:43;padding:7px 11px;border-radius:999px;font:600 10.5px/1 var(--mono);letter-spacing:.08em;color:#ddd;background:rgba(10,10,12,.6);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(8px);cursor:pointer}
+html.js #replay:hover{background:rgba(255,255,255,.1)}
+html.js:not([data-state="desk"]) #replay{display:none}
+
 /* scan line that sweeps the desk when the detector runs */
 html.js #scan{display:block;position:fixed;left:0;right:0;top:0;height:2px;z-index:31;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent,var(--lock) 15%,var(--lock) 85%,transparent);box-shadow:0 0 22px 3px color-mix(in srgb,var(--lock) 45%,transparent)}
 
@@ -157,6 +168,8 @@ html.js #scan{display:block;position:fixed;left:0;right:0;top:0;height:2px;z-ind
   .hud-tl{left:74px}
   .hud-br{right:26px;bottom:32px}
   .box .tag{font-size:9px;line-height:17px;padding:0 5px}
+  html.js #replay{top:auto;bottom:62px;right:16px}
+  .box.decor{display:none} /* their quips need hover, which touch screens don't have */
   html.js .sec .sec-inner{padding:96px 22px 170px}
   html.js .secbar{flex-direction:column;gap:8px;bottom:16px}
   .secbar .back{position:static}
