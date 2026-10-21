@@ -22,7 +22,7 @@ export function createHud(root) {
   addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; }, { passive: true });
   function follow() {
     cx += (mx - cx) * .3; cy += (my - cy) * .3;
-    cur.style.transform = `translate(${cx}px, ${cy}px)`;
+    cur.style.translate = `${cx}px ${cy}px`;
     loop = following ? requestAnimationFrame(follow) : 0;
   }
 

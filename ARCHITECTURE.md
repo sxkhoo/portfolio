@@ -68,6 +68,7 @@ index.html
 - **Intro preload can be interrupted.** Photo and font readiness share a 2.5 s cap. A skip settles this wait immediately; late loads cannot restart the opening. Cancelled photo results are retried on replay.
 - **Fonts have one URL source.** `index.html` preloads the Inter Tight/JetBrains Mono stylesheet and a separate Caveat stylesheet. The Caveat `text=` subset covers the caption, seal and signature; update its characters when adding handwritten copy. `early.js` activates those same links without another request. A stalled font server still permits boot and first paint.
 - **Camera = focus-point Cam `{ox, oy, rotation, scale}`.** Measure at rest (`measure()` clears the transform), fit with `fitCamera`, move with `lerpCamera` (dip > 0 pulls back mid-move), apply with `toTransform` through `gsap.set`.
+- **Cursor placement stays in screen space.** `hud.js` writes the reticle's CSS `translate`; hover `rotate` and `scale` animate independently so they cannot move it away from the pointer.
 - **Motion seam.** `createMotion` returns the GSAP driver or the static one (reduced motion / GSAP missing). New animation needs both.
 - **Single sources.** Geometry (positions, tilt, scale) lives only in `layout.js`; colours only in CSS (`--c-<key>`); section metadata only in `config.js`.
 - **No SVG filters in the scene.** Shadows are `img/shadow.png` or radial gradients in `#shades`, positioned by `applyLayout`; filters stall high-zoom frames.

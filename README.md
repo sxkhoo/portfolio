@@ -52,9 +52,9 @@ This preview enables gzip and the four security headers from `vercel.json`. The 
 
 Verified locally on 2026-10-21:
 
-- 30 unit tests and 130 Chromium/WebKit browser checks passed (2 frame-check cases intentionally skipped in the ordinary suite). All 3 isolated Chromium timing checks passed, with the desk interactive in about 2.9 s.
+- 30 unit tests and 132 Chromium/WebKit browser checks passed (2 frame-check cases intentionally skipped in the ordinary suite). All 3 isolated Chromium timing checks passed, with the desk interactive in about 2.9 s.
 - Lighthouse 12.8.2 mobile on the compressed audit preview: Performance **92, 93, 93**; Accessibility **100** in all three sequential runs.
-- Gzipped site code: 31,504 bytes; including pinned GSAP: 59,704 bytes against the 250,000-byte budget. The large photo is 243,184 bytes against its 250,000-byte budget.
+- Gzipped site code: 31,498 bytes; including pinned GSAP: 59,698 bytes against the 250,000-byte budget. The large photo is 243,184 bytes against its 250,000-byte budget.
 - Real CDN/font loading and all five sections worked at desktop and phone sizes with no console errors; all four security headers were verified. A stalled font server still permits first paint and the desk.
 
 Manual checks on a real phone and in real Safari remain part of release review.
