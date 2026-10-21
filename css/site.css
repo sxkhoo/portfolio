@@ -1,0 +1,101 @@
+/* Site tokens, type and the plain document layout (what visitors without JS get).
+   Camera-mode styling lives in viewfinder.css, scoped to html.js. */
+:root{
+  --bg:#0b0b0c; --ink:#F2EFE8; --muted:rgba(242,239,232,.64); --line:rgba(242,239,232,.16);
+  --hud:#F2EFE8; --lock:#C8FF3E; --rec:#FF453A;
+  --c-work:#6A8DFF; --c-coffee:#F4A940; --c-trade:#34D399; --c-about:#FF7A9A; --c-contact:#B79BFF; --c-decor:#A3A9B1;
+  --seal:#5B3FC4; --letter-ink:#1E2B4F;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --sans:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --hand:'Caveat',cursive;
+  --max:1080px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--lock);outline-offset:3px}
+.skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--lock);color:#0b0c0e;font:700 13px/1 var(--mono);padding:10px 14px;border-radius:999px;text-decoration:none}
+.skip:focus{top:12px}
+
+/* IDENTITY */
+.ident{max-width:var(--max);margin:0 auto;padding:64px 28px 8px}
+.status{display:inline-flex;align-items:center;gap:8px;margin:0;font:500 11px/1 var(--mono);letter-spacing:.08em;border:1px solid var(--line);padding:6px 10px;border-radius:999px}
+.status i{width:7px;height:7px;border-radius:50%;background:var(--lock);box-shadow:0 0 8px var(--lock)}
+.name{font:700 clamp(40px,7vw,64px)/1 var(--sans);letter-spacing:-.035em;margin:14px 0 8px}
+.name .w{display:inline-block}
+.sub{font:500 13px/1.4 var(--mono);color:var(--muted);margin:0}
+.links{display:flex;gap:16px;margin:14px 0 0;font:600 12px/1 var(--mono);letter-spacing:.06em}
+.links a{text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:3px}
+
+/* TABLE OF CONTENTS */
+.toc{max-width:var(--max);margin:28px auto 0;padding:0 28px;display:flex;flex-wrap:wrap;gap:6px}
+.toc a{font:600 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:9px 12px;color:var(--muted)}
+.toc a:hover{color:var(--ink)}
+
+/* SECTIONS */
+[data-section="work"]{--acc:var(--c-work)}
+[data-section="coffee"]{--acc:var(--c-coffee)}
+[data-section="trade"]{--acc:var(--c-trade)}
+[data-section="about"]{--acc:var(--c-about)}
+[data-section="contact"]{--acc:var(--c-contact)}
+.sec-inner{max-width:var(--max);margin:0 auto;padding:72px 28px}
+.sec + .sec .sec-inner{border-top:1px solid var(--line)}
+.sec-k{font:600 11.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin:0}
+.sec-t{font:700 clamp(44px,7.6vw,104px)/.92 var(--sans);letter-spacing:-.045em;margin:18px 0 16px}
+.sec-l{font:500 18px/1.5 var(--sans);color:var(--muted);max-width:58ch;margin:0 0 40px}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pills span{font:500 11px/1 var(--mono);padding:6px 9px;border:1px solid var(--line);border-radius:999px}
+
+/* WORK — project cards drawn as detection crops */
+.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:42px 20px}
+.det{position:relative;border:1.5px solid color-mix(in srgb,var(--acc) 55%,transparent);background:color-mix(in srgb,var(--acc) 7%,transparent);padding:26px 24px 22px}
+.det-tag{position:absolute;left:-1.5px;top:-1.5px;transform:translateY(-100%);background:var(--acc);color:#0b0c0e;font:700 11px/22px var(--mono);padding:0 8px}
+.det .det-meta{font:500 11px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+.det h3{font:700 23px/1.15 var(--sans);letter-spacing:-.02em;margin:0 0 10px}
+.det-tldr{font-size:15px;line-height:1.55;margin:0 0 12px}
+.det-tldr strong{font-weight:600}
+.det-bullets{margin:0 0 16px;padding-left:18px;font-size:14px;line-height:1.5;color:var(--muted)}
+.det-bullets li + li{margin-top:5px}
+.also{margin:30px 0 0;font:500 13px/1.6 var(--mono);color:var(--muted)}
+
+/* COFFEE — brew log */
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.filters button{font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#0b0c0e}
+.log{width:100%;border-collapse:collapse;font:400 14px/1.4 var(--mono)}
+.log th{text-align:left;font-size:10.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:12px 8px;border-bottom:1px solid var(--line)}
+.log td{padding:16px 8px;border-bottom:1px solid var(--line);vertical-align:baseline}
+.log .bean b{display:block;font:700 18px/1.2 var(--sans);letter-spacing:-.01em}
+.log .bean span{display:block;font-size:12.5px;color:var(--muted);margin-top:4px}
+.log .unrated{color:var(--muted)}
+.log .stars{color:var(--acc);letter-spacing:.1em}
+
+/* TRADE */
+.tcards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.tcard{border:1px solid var(--line);border-top:3px solid var(--acc);padding:22px;background:rgba(255,255,255,.025)}
+.tcard .src{font:600 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--acc)}
+.tcard h3{font:700 28px/1.05 var(--sans);letter-spacing:-.02em;margin:14px 0 6px}
+.tcard .since{font:500 12px/1 var(--mono);color:var(--muted);margin:0 0 16px}
+.tcard p{font-size:15px;line-height:1.55;margin:0}
+
+/* ABOUT */
+.badge{display:inline-block;font:500 12.5px/1 var(--mono);border:1px solid var(--line);border-radius:999px;padding:8px 12px;margin:-16px 0 34px}
+.facts{display:grid;gap:22px;max-width:620px}
+.fact h4{font:600 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin:0 0 9px}
+.fact p{font-size:15.5px;line-height:1.6;margin:0}
+
+/* CONTACT */
+#contact .sec-inner{text-align:center}
+.cta{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:34px 0 18px}
+.btn{font:700 14px/1 var(--mono);letter-spacing:.03em;padding:17px 24px;border-radius:999px;text-decoration:none;border:1.5px solid currentColor}
+.btn.fill{background:var(--ink);border-color:var(--ink);color:#0b0c0e}
+.meta{font:500 13px/1.5 var(--mono);color:var(--muted);margin:0}
+.sig{font:700 36px/1 var(--hand);color:var(--c-contact);margin:26px 0 0}
+#contact footer{margin-top:56px;font:500 12px/1.5 var(--mono);color:var(--muted)}
+
+@media(max-width:860px){
+  .det-grid,.tcards{grid-template-columns:1fr}
+  .log th:nth-child(3),.log td:nth-child(3),.log th:nth-child(4),.log td:nth-child(4){display:none}
+}
