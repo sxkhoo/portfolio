@@ -1,9 +1,10 @@
 /* Camera mode. Everything here is scoped to html.js (set by js/early.js before
    first paint); without it the page is the plain document in site.css. */
 
-.cam,#boot,.boxes,#scan,.hud{display:none}
+.cam,#boot,.boxes,#scan,.hud,.secbar{display:none}
 
 html.js,html.js body{height:100%;overflow:hidden;background:#000}
+html.js{--hud-dim:rgba(242,239,232,.62);--hud-faint:rgba(242,239,232,.28)}
 
 /* CAMERA */
 html.js .cam{display:block;position:fixed;inset:0;transform-origin:0 0}
@@ -14,12 +15,59 @@ html.js #boot{position:fixed;inset:0;z-index:50;display:grid;place-items:center;
 html.js #boot p{font:500 11.5px/1.9 var(--mono);letter-spacing:.2em;color:var(--muted);text-align:center;margin:0}
 html.vf-ready #boot{opacity:0;visibility:hidden}
 
-/* the document parts the camera replaces */
-html.js .sec{display:none}
+/* SECTIONS — each opens on the surface of its object */
+html.js .sec{display:none;position:fixed;inset:0;z-index:36;overflow:auto;overscroll-behavior:contain;background:var(--sbg);color:var(--sink,var(--ink));opacity:0;transition:opacity .2s}
+html.js .sec.is-open{display:block}
+html.js .sec.is-visible{opacity:1}
+html.js .sec .sec-inner{padding:118px 56px 160px}
+html.js .sec + .sec .sec-inner{border-top:0}
+html.js #work{--sbg:rgba(6,11,24,.88)}
+html.js #coffee{--sbg:rgba(30,16,7,.84)}
+html.js #trade{--sbg:rgba(3,9,6,.84)}
+html.js #trade .tcard{background:rgba(3,9,6,.62);backdrop-filter:blur(6px)}
+html.js #about{--sbg:linear-gradient(90deg,rgba(8,10,14,.93) 0%,rgba(8,10,14,.8) 48%,rgba(8,10,14,.15) 100%)}
+html.js #contact{--sbg:rgba(240,232,216,.86);--sink:var(--letter-ink);--muted:rgba(30,43,79,.66);--line:rgba(30,43,79,.2);--acc:var(--seal)}
+html.js #contact .btn.fill{background:var(--letter-ink);border-color:var(--letter-ink);color:#F0E8D8}
+html.js #contact .sig{color:var(--seal)}
+html.js #contact .sec-inner{padding-top:18vh}
+/* static mode: the camera never moves, so the overlays are near-opaque */
+html.vf-static #work{--sbg:rgba(6,11,24,.97)}
+html.vf-static #coffee{--sbg:rgba(30,16,7,.97)}
+html.vf-static #trade{--sbg:rgba(3,9,6,.97)}
+html.vf-static #about{--sbg:rgba(8,10,14,.97)}
+html.vf-static #contact{--sbg:rgba(240,232,216,.97)}
+
+/* skip-link target: hidden until focused, then a small panel */
 html.js .toc{position:fixed;top:0;left:0;width:1px;height:1px;margin:0;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+html.js .toc:focus,html.js .toc:focus-within{top:72px;left:22px;z-index:60;width:auto;height:auto;padding:10px;overflow:visible;clip-path:none;background:rgba(10,10,12,.92);border:1px solid var(--line);border-radius:14px;white-space:normal}
+
+/* desk-only furniture fades away inside sections */
+html.js .crosshair,html.js .ident,html.js #hint,html.js .hud-bc{transition:opacity .25s,visibility 0s}
+html.js:not([data-state="desk"]):not([data-state="intro"]) .crosshair,
+html.js:not([data-state="desk"]):not([data-state="intro"]) .ident,
+html.js:not([data-state="desk"]):not([data-state="intro"]) #hint,
+html.js:not([data-state="desk"]):not([data-state="intro"]) .hud-bc{opacity:0;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
+
+/* SECTION BAR */
+html.js .secbar{display:flex;position:fixed;left:0;right:0;bottom:24px;z-index:42;justify-content:center;align-items:center;font-family:var(--mono);color:var(--hud);opacity:0;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
+html.js .secbar.on{opacity:1;visibility:visible;transition:opacity .25s}
+.secbar .back{position:absolute;left:84px;display:flex;gap:8px;align-items:center;padding:8px 0;font:700 11.5px/1 var(--mono);letter-spacing:.12em;color:inherit;background:none;border:0;cursor:pointer}
+.secbar .zx{position:absolute;right:84px;font:700 11.5px/1 var(--mono);letter-spacing:.08em;color:var(--hud-dim)}
+.secbar kbd{font:600 10px/1 var(--mono);border:1px solid var(--hud-faint);border-radius:3px;padding:3px 5px}
+.chips{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(0,0,0,.4);border:1px solid var(--hud-faint);backdrop-filter:blur(8px)}
+.chip{font:600 10.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:9px 12px;border-radius:999px;color:var(--hud-dim);background:none;border:0;cursor:pointer;white-space:nowrap}
+.chip:hover{color:var(--hud)}
+.chip.on{background:var(--hud);color:#0b0c0e}
+
+/* the letter is light: the camera overlay switches to ink */
+html[data-section="contact"] .hud,html[data-section="contact"] .secbar{--hud:var(--letter-ink);--hud-dim:rgba(30,43,79,.66);--hud-faint:rgba(30,43,79,.28);text-shadow:none}
+html[data-section="contact"] .hud::before,html[data-section="contact"] .hud::after{display:none}
+html[data-section="contact"] .chips{background:rgba(255,255,255,.45)}
+html[data-section="contact"] .chip.on{color:#F0E8D8}
 
 /* IDENTITY — bottom-left of the desk */
-html.js .ident{position:fixed;left:58px;bottom:40px;z-index:41;max-width:none;margin:0;padding:0}
+html.js .ident{position:fixed;left:58px;bottom:40px;z-index:41;max-width:none;margin:0;padding:0;pointer-events:none}
+html.js .ident a{pointer-events:auto}
 html.js .status{background:rgba(0,0,0,.38);border-color:rgba(242,239,232,.28);backdrop-filter:blur(6px)}
 html.js .name{display:flex;gap:.24em;font-size:42px;margin:10px 0 6px;filter:drop-shadow(0 2px 16px rgba(0,0,0,.45))}
 html.js .name .w{overflow:hidden;padding-bottom:.08em;margin-bottom:-.08em}
@@ -109,6 +157,11 @@ html.js #scan{display:block;position:fixed;left:0;right:0;top:0;height:2px;z-ind
   .hud-tl{left:74px}
   .hud-br{right:26px;bottom:32px}
   .box .tag{font-size:9px;line-height:17px;padding:0 5px}
+  html.js .sec .sec-inner{padding:96px 22px 170px}
+  html.js .secbar{flex-direction:column;gap:8px;bottom:16px}
+  .secbar .back{position:static}
+  .secbar .zx{display:none}
+  .chips{max-width:calc(100vw - 32px);overflow-x:auto}
 }
 @media(prefers-reduced-motion:reduce){
   .rec i{animation:none}
