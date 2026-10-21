@@ -1,7 +1,7 @@
 ---
 title: Viewfinder — portfolio redesign
-status: draft, awaiting approval
-owners: [index.html, styles.css, script.js]
+status: implemented
+owners: [index.html, css/site.css, css/viewfinder.css, js/]
 last_verified: 2026-10-21
 ---
 
@@ -69,7 +69,7 @@ Approved direction after a clickable mockup ("feels right — keep this directio
 - **Browsers:** current Chrome, Edge, Firefox and Safari, including iOS Safari 16.4+.
 - **Performance budget:**
   - HTML, CSS, JS and the inline scene, excluding the photo: ≤ 250 KB transferred.
-  - `pfp.jpg` is 576 KB (2560×1697). Serve responsive WebP/AVIF at about 1280w and 2560w, with the large one ≤ 250 KB.
+  - `pfp.jpg` is 576 KB (2560×1697). Serve responsive WebP at 1280w and 2048w, with the large one ≤ 250 KB (film grain made 2560w too heavy).
   - Lighthouse mobile: Performance ≥ 90, Accessibility ≥ 95.
   - No frames over 50 ms during a zoom in a Chrome performance trace on a 2020-era laptop.
 - **Repo hygiene:** add `.superpowers/` (brainstorm mockups) to `.gitignore`.
@@ -246,7 +246,7 @@ All text comes verbatim from the current `index.html` at `ab6b1f5` unless noted,
 - Portrait and narrow screens get a vertical arrangement of the same drawn objects, stacked to fill a tall frame.
   - All five section objects must be visible without scrolling at 390×844.
   - The mockup's letterboxed landscape desk is only a placeholder.
-- There are no hover states, so labels are always visible. Tap targets are at least 44×44 px.
+- There are no hover states, so labels are always visible. Tap targets are at least 44×44 px. Decor labels are hidden (their quips need hover).
 - The HUD is trimmed: camera settings, focus scale and model line are hidden. Corners, REC/timecode and the hint stay.
 - Sections are a single column that scrolls inside the section. The chip bar scrolls sideways if needed, and "◂ DESK" is always reachable.
 - The opening frames the photo for portrait: face centred, name above it.
@@ -273,7 +273,7 @@ All text comes verbatim from the current `index.html` at `ab6b1f5` unless noted,
 ### 4.9 Performance notes from the mockup
 
 - Animate only transform, opacity and filter on the camera layer. Avoid layout reads in per-frame callbacks except box tracking.
-- Big zooms (Coffee, about 16×) re-rasterise the SVG. Keep scene filters cheap: drop shadows only, no `feTurbulence`. Test in Safari.
+- Big zooms (Coffee, about 16×) re-rasterise the SVG every frame. SVG filters are out entirely: drop-shadow filters made zoom frames 100–250 ms, so shadows are a pre-blurred sprite image (`img/shadow.png`) and radial gradients in their own layer.
 
 ### 4.10 Edge cases
 

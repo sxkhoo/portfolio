@@ -148,10 +148,11 @@ html.js .boxes{display:block;position:fixed;inset:0;z-index:30;pointer-events:no
 .box.lock{--c:var(--lock)!important}
 
 /* the opening: autofocus reticle and the face it locks onto */
-html.js #af{display:block;position:fixed;left:0;top:0;z-index:35;width:90px;height:90px;pointer-events:none;opacity:0}
+html.js #af{display:block;position:fixed;left:0;top:0;z-index:35;width:90px;height:90px;pointer-events:none;opacity:0;visibility:hidden}
 #af.lock{--tc:var(--lock)}
 #af .af-lbl{position:absolute;left:0;top:-18px;font:700 10px/1 var(--mono);letter-spacing:.12em;color:var(--tc)}
-html.js #facebox{display:block;position:fixed;z-index:35;pointer-events:none;--c:var(--lock)}
+html.js #facebox{display:block;position:fixed;z-index:35;pointer-events:none;visibility:hidden;--c:var(--lock)}
+#facebox .tag::after{content:attr(data-label)} /* decorative: drawn, not page text */
 
 /* replay the opening: desk only */
 html.js #replay{display:block;position:fixed;top:64px;right:80px;z-index:43;padding:7px 11px;border-radius:999px;font:600 10.5px/1 var(--mono);letter-spacing:.08em;color:#ddd;background:rgba(10,10,12,.6);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(8px);cursor:pointer}

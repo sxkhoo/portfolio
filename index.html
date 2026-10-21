@@ -13,13 +13,30 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="theme-color" content="#0b0b0c" />
 <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-<script src="js/early.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&amp;family=Inter+Tight:wght@500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" />
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+<link rel="preload" as="image" href="img/pfp-1280.webp" imagesrcset="img/pfp-1280.webp 1280w, img/pfp-2048.webp 2048w" imagesizes="100vw" fetchpriority="high" />
+<script src="js/early.js"></script>
 <link rel="stylesheet" href="css/site.css" />
 <link rel="stylesheet" href="css/viewfinder.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+<!-- no bundler: fetch the whole module graph in parallel instead of import by import -->
+<link rel="modulepreload" href="js/config.js" />
+<link rel="modulepreload" href="js/state.js" />
+<link rel="modulepreload" href="js/router.js" />
+<link rel="modulepreload" href="js/storage.js" />
+<link rel="modulepreload" href="js/layout.js" />
+<link rel="modulepreload" href="js/camera.js" />
+<link rel="modulepreload" href="js/scene.js" />
+<link rel="modulepreload" href="js/fx.js" />
+<link rel="modulepreload" href="js/boxes.js" />
+<link rel="modulepreload" href="js/hud.js" />
+<link rel="modulepreload" href="js/sections.js" />
+<link rel="modulepreload" href="js/motion.js" />
+<link rel="modulepreload" href="js/motion-gsap.js" />
+<link rel="modulepreload" href="js/brewlog.js" />
+<link rel="modulepreload" href="js/data/coffees.js" />
 <script type="module" src="js/main.js"></script>
 </head>
 <body>
@@ -181,7 +198,7 @@
 <nav id="boxes" class="boxes" aria-label="Desk"></nav>
 <div id="scan" aria-hidden="true"></div>
 <div id="af" class="t4" aria-hidden="true"><span class="af-lbl">AF</span></div>
-<div id="facebox" class="box" aria-hidden="true"><span class="fr"></span><span class="tag">person 0.99</span></div>
+<div id="facebox" class="box" aria-hidden="true"><span class="fr"></span><span class="tag" data-label="person 0.99"></span></div>
 <button id="replay" class="replay" type="button">↺ replay intro</button>
 
 <div class="hud" aria-hidden="true">

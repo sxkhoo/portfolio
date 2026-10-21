@@ -21,6 +21,19 @@ test('failsafe: if main.js never boots, the document comes back', async ({ page 
   await expect(page.locator('#work-h')).toBeVisible();
 });
 
+test('a stalled font server does not hold up the page', async ({ page }) => {
+  await page.route(/fonts\.googleapis\.com/, () => {}); // never answers
+  await page.addInitScript(() => localStorage.setItem('ksx-viewfinder-intro-v1', '1'));
+  await page.goto('/', { waitUntil: 'commit' });
+  await expect(page.locator('html')).toHaveAttribute('data-state', 'desk', { timeout: 3000 });
+});
+
+test('idle reticle and face box are hidden, not just transparent', async ({ page }) => {
+  await gotoVF(page, { introSeen: true });
+  await expect(page.locator('html')).toHaveAttribute('data-state', 'desk');
+  for (const id of ['#af', '#facebox']) expect(await page.locator(id).evaluate(el => getComputedStyle(el).visibility), id).toBe('hidden');
+});
+
 test('photo uses the responsive webp', async ({ page }) => {
   await gotoVF(page);
   await expect(page.locator('#photo')).toHaveAttribute('href', /img\/pfp-(1280|2048)\.webp$/);

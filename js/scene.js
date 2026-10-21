@@ -122,5 +122,5 @@ export function measure(cam, svg, layout) {
 }
 
 export function photoHref(viewportWidth, dpr) {
-  return viewportWidth * dpr > 1600 ? 'img/pfp-2048.webp' : 'img/pfp-1280.webp';
+  return viewportWidth * dpr > 1280 ? 'img/pfp-2048.webp' : 'img/pfp-1280.webp';
 }

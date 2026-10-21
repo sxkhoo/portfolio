@@ -93,9 +93,9 @@ export function gsapMotion({ gsap, cam, hud, boxes }) {
       gsap.set([...fades, sub], { opacity: 0 });
       gsap.set(cam, { ...toTransform(about, vp), filter: F(26, 1.8, .3) });
       hud.setZoom(about.scale);
-      gsap.set(af, { opacity: 1, x: vp.w / 2 - 45, y: vp.h / 2 - 45, scale: 1 });
+      gsap.set(af, { autoAlpha: 1, x: vp.w / 2 - 45, y: vp.h / 2 - 45, scale: 1 });
       af.classList.remove('lock');
-      tag.textContent = 'person 0.99';
+      tag.dataset.label = 'person 0.99';
 
       // autofocus hunting, then lock
       let t = .5;
@@ -111,11 +111,11 @@ export function gsapMotion({ gsap, cam, hud, boxes }) {
       t += .34;
 
       // the reticle becomes a face box; the name arrives
-      tl.set(fb, { opacity: 1, left: fx - 45, top: fy - 45, width: 90, height: 90 }, t)
+      tl.set(fb, { autoAlpha: 1, left: fx - 45, top: fy - 45, width: 90, height: 90 }, t)
         .to(fb, { left: face.left - 14, top: face.top - 18, width: face.width + 28, height: face.height + 36, duration: .3, ease: 'expo.out' }, t)
-        .to(af, { opacity: 0, duration: .15 }, t)
+        .to(af, { autoAlpha: 0, duration: .15 }, t)
         .add(() => hud.setCount(1), t)
-        .add(() => scramble(tag, 'khoo_shi_xian 0.99', 22), t + .25)
+        .add(() => scramble(tag, 'khoo_shi_xian 0.99', 22, 'data-label'), t + .25)
         .to(words, { yPercent: 0, duration: .7, ease: 'expo.out', stagger: .07 }, t + .05)
         .to(fades, { opacity: 1, duration: .3 }, t + .3)
         .to(sub, { opacity: 1, duration: .3 }, t + .4)
@@ -133,7 +133,7 @@ export function gsapMotion({ gsap, cam, hud, boxes }) {
         },
       });
       blurPulse(tl, t, 3, .45, .55);
-      tl.to(fb, { opacity: 0, duration: .35 }, t + .5)
+      tl.to(fb, { autoAlpha: 0, duration: .35 }, t + .5)
         .to(ident, { scale: 1, y: 0, duration: 1, ease: 'power3.inOut' }, t)
         .set(cam, { clearProps: 'transform' }, t + 1)
         .set([ident, ...words, ...fades, sub, af, fb], { clearProps: 'all' }, t + 1.01);
