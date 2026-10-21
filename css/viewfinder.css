@@ -1,7 +1,7 @@
 /* Camera mode. Everything here is scoped to html.js (set by js/early.js before
    first paint); without it the page is the plain document in site.css. */
 
-.cam,#boot{display:none}
+.cam,#boot,.boxes,#scan,.hud{display:none}
 
 html.js,html.js body{height:100%;overflow:hidden;background:#000}
 
@@ -27,7 +27,90 @@ html.js .name .w>span{display:inline-block}
 html.js .sub{font-size:12px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 html.js .links{margin-top:10px}
 
+/* corner-tick frame used by reticles and boxes */
+.t4{--tc:var(--hud);--tl:16px;--tw:2px;background:
+  linear-gradient(var(--tc) 0 0) 0 0/var(--tl) var(--tw),
+  linear-gradient(var(--tc) 0 0) 0 0/var(--tw) var(--tl),
+  linear-gradient(var(--tc) 0 0) 100% 0/var(--tl) var(--tw),
+  linear-gradient(var(--tc) 0 0) 100% 0/var(--tw) var(--tl),
+  linear-gradient(var(--tc) 0 0) 0 100%/var(--tl) var(--tw),
+  linear-gradient(var(--tc) 0 0) 0 100%/var(--tw) var(--tl),
+  linear-gradient(var(--tc) 0 0) 100% 100%/var(--tl) var(--tw),
+  linear-gradient(var(--tc) 0 0) 100% 100%/var(--tw) var(--tl);
+  background-repeat:no-repeat}
+
+/* HUD */
+html.js .hud{display:block;position:fixed;inset:0;z-index:40;pointer-events:none;font-family:var(--mono);color:var(--hud);text-shadow:0 1px 3px rgba(0,0,0,.5);--hud-dim:rgba(242,239,232,.62);--hud-faint:rgba(242,239,232,.28)}
+.hud::before,.hud::after{content:'';position:absolute;left:0;right:0;pointer-events:none}
+.hud::before{top:0;height:120px;background:linear-gradient(rgba(0,0,0,.42),transparent)}
+.hud::after{bottom:0;height:150px;background:linear-gradient(transparent,rgba(0,0,0,.58))}
+.corner{position:absolute;width:44px;height:44px;border:0 solid var(--hud);opacity:.9}
+.corner.tl{left:22px;top:22px;border-top-width:2px;border-left-width:2px;transform-origin:0 0}
+.corner.tr{right:22px;top:22px;border-top-width:2px;border-right-width:2px;transform-origin:100% 0}
+.corner.bl{left:22px;bottom:22px;border-bottom-width:2px;border-left-width:2px;transform-origin:0 100%}
+.corner.br{right:22px;bottom:22px;border-bottom-width:2px;border-right-width:2px;transform-origin:100% 100%}
+.hud-row{position:absolute;z-index:1;display:flex;gap:18px;align-items:center;font-size:11.5px;letter-spacing:.08em;white-space:nowrap}
+.hud-tl{left:84px;top:36px}
+.hud-tc{left:50%;top:36px;transform:translateX(-50%);color:var(--hud-dim)}
+.hud-tr{right:84px;top:36px;color:var(--hud-dim)}
+.hud-bc{left:50%;bottom:36px;transform:translateX(-50%)}
+.hud-br{right:84px;bottom:36px;color:var(--hud-dim)}
+.hud .dim{color:var(--hud-dim)}
+.rec{display:inline-flex;align-items:center;gap:7px;font-weight:700}
+.rec i{width:9px;height:9px;border-radius:50%;background:var(--rec);box-shadow:0 0 10px var(--rec);animation:rec-blink 1s steps(1) infinite}
+@keyframes rec-blink{50%{opacity:.15}}
+.batt{display:inline-block;width:22px;height:10px;border:1.5px solid var(--hud-dim);border-radius:2px;position:relative}
+.batt::before{content:'';position:absolute;inset:1.5px 5px 1.5px 1.5px;background:var(--hud-dim)}
+.batt::after{content:'';position:absolute;right:-4px;top:2px;width:2px;height:4px;background:var(--hud-dim)}
+.crosshair{position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;opacity:.3}
+.crosshair::before,.crosshair::after{content:'';position:absolute;background:var(--hud)}
+.crosshair::before{left:8px;top:0;width:2px;height:18px}
+.crosshair::after{top:8px;left:0;width:18px;height:2px}
+.fscale{position:relative;width:230px;height:24px}
+.fscale .lbl{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;font-size:9.5px;color:var(--hud-dim)}
+.fscale .ticks{position:absolute;left:0;right:0;bottom:0;height:7px;background:repeating-linear-gradient(90deg,var(--hud-faint) 0 1px,transparent 1px 11.5px)}
+.fscale .mk{position:absolute;bottom:-3px;left:78%;width:2px;height:13px;margin-left:-1px;background:var(--lock);box-shadow:0 0 8px var(--lock)}
+#zoomx{font-weight:700;min-width:46px}
+
+/* desk reticle: follows a fine pointer, locks when over a section box */
+#cur{position:absolute;left:-13px;top:-13px;width:26px;height:26px;--tl:8px;opacity:0;transition:opacity .2s,scale .25s cubic-bezier(.2,.9,.3,1.4),rotate .25s cubic-bezier(.2,.9,.3,1.4)}
+html.vf-cursor #cur{opacity:1}
+html.vf-cursor .cam,html.vf-cursor #boxes .box{cursor:none}
+html:has(#boxes .box.obj:hover) #cur{--tc:var(--lock);scale:1.5;rotate:90deg}
+
+/* DETECTION BOXES */
+html.js .boxes{display:block;position:fixed;inset:0;z-index:30;pointer-events:none}
+.box{position:absolute;left:0;top:0;--c:var(--hud);opacity:0;padding:0;margin:0;background:none;border:0;font:inherit;color:inherit;text-align:left;pointer-events:auto;transition:opacity .2s}
+.boxes.on .box{opacity:1}
+.box .fr{position:absolute;inset:0;border:1.5px solid color-mix(in srgb,var(--c) 85%,transparent);background:color-mix(in srgb,var(--c) 4%,transparent);transition:background .2s,box-shadow .2s,opacity .2s}
+.box .fr::after{content:'';position:absolute;inset:-3px;--tc:var(--c);--tl:12px;--tw:3px;background:
+  linear-gradient(var(--tc) 0 0) 0 0/var(--tl) var(--tw),linear-gradient(var(--tc) 0 0) 0 0/var(--tw) var(--tl),
+  linear-gradient(var(--tc) 0 0) 100% 0/var(--tl) var(--tw),linear-gradient(var(--tc) 0 0) 100% 0/var(--tw) var(--tl),
+  linear-gradient(var(--tc) 0 0) 0 100%/var(--tl) var(--tw),linear-gradient(var(--tc) 0 0) 0 100%/var(--tw) var(--tl),
+  linear-gradient(var(--tc) 0 0) 100% 100%/var(--tl) var(--tw),linear-gradient(var(--tc) 0 0) 100% 100%/var(--tw) var(--tl);
+  background-repeat:no-repeat}
+.box .tag{position:absolute;left:-1.5px;bottom:100%;margin-bottom:-1.5px;background:var(--c);color:#0b0c0e;font:700 11px/22px var(--mono);letter-spacing:.02em;padding:0 8px;white-space:nowrap;transition:opacity .2s}
+.box .go{position:absolute;right:-1.5px;top:100%;margin-top:7px;font:700 11px/1 var(--mono);letter-spacing:.16em;color:var(--c);white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.6);transition:opacity .2s,transform .2s}
+.box.obj{cursor:pointer}
+.box.obj:hover .fr,.box.obj:focus-visible .fr{background:color-mix(in srgb,var(--c) 12%,transparent);box-shadow:0 0 0 1px var(--c),0 0 36px color-mix(in srgb,var(--c) 45%,transparent)}
+.box.obj:hover .go,.box.obj:focus-visible .go{transform:translateX(5px)}
+.box.obj:focus-visible{outline:none}
+#boxes:has(.box:hover,.box:focus-visible) .box:not(:hover,:focus-visible)>*{opacity:.28}
+.box.decor .fr{border-style:dashed;background:none}
+.box.lock{--c:var(--lock)!important}
+
+/* scan line that sweeps the desk when the detector runs */
+html.js #scan{display:block;position:fixed;left:0;right:0;top:0;height:2px;z-index:31;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent,var(--lock) 15%,var(--lock) 85%,transparent);box-shadow:0 0 22px 3px color-mix(in srgb,var(--lock) 45%,transparent)}
+
 @media(max-width:700px){
   html.js .ident{left:28px;bottom:84px}
   html.js .name{font-size:38px}
+  .hud-tc,.hud-tr,.hud-bc,.box .go{display:none}
+  .hud-tl{left:74px}
+  .hud-br{right:26px;bottom:32px}
+  .box .tag{font-size:9px;line-height:17px;padding:0 5px}
+}
+@media(prefers-reduced-motion:reduce){
+  .rec i{animation:none}
+  .box,.box .fr,.box .go,#cur{transition:none}
 }

@@ -163,6 +163,21 @@
 </svg>
 </div>
 
+<!-- the detector's output: one box per desk object (filled by js/boxes.js) -->
+<nav id="boxes" class="boxes" aria-label="Desk"></nav>
+<div id="scan" aria-hidden="true"></div>
+
+<div class="hud" aria-hidden="true">
+  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+  <div class="hud-row hud-tl"><span class="rec"><i></i>REC</span><span id="tc">00:00:00:00</span><span class="dim">CAM 01</span></div>
+  <div class="hud-row hud-tc">DETECT · yolo-ksx-v11n · <span id="objcount">0</span> obj</div>
+  <div class="hud-row hud-tr">ISO 400&nbsp;&nbsp;ƒ/1.8&nbsp;&nbsp;1/125&nbsp;&nbsp;AWB <span class="batt"></span></div>
+  <div class="hud-row hud-bc"><div class="fscale"><div class="lbl"><span>0.3</span><span>0.5</span><span>1</span><span>3</span><span>∞ m</span></div><div class="ticks"></div><div class="mk"></div></div><span id="zoomx">1.0×</span></div>
+  <div class="hud-row hud-br" id="hint"></div>
+  <div class="crosshair"></div>
+  <div id="cur" class="t4"></div>
+</div>
+
 <header class="ident">
   <p class="status"><i aria-hidden="true"></i>open to internships · SG / remote</p>
   <h1 class="name"><span class="w"><span>Khoo</span></span> <span class="w"><span>Shi</span></span> <span class="w"><span>Xian</span></span></h1>
