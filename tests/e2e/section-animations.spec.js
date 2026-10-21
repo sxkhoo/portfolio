@@ -20,6 +20,7 @@ const covers = (page, key) => page.locator(`#${target(key)}`).evaluate(el => {
 
 const baseline = page => page.evaluate(() => {
   const selectors = ['#anim-laptop', '#screen-glow', '#code', '#anim-v60', '#tilt-v60',
+    '#v60-top', '#v60-side', '#v60-body', '#v60-body-shade', '#v60-empty', '#z-v60', '#bloom',
     '#spill', '#coffee-puddle', '#coffee-stream', '#coffee-drops', '#anim-phone',
     '#candles', '#vol', '#anim-polaroid', '#photo', '#anim-envelope', '#letter', '#flap'];
   const rect = el => {
@@ -29,7 +30,7 @@ const baseline = page => page.evaluate(() => {
   return {
     parts: selectors.map(selector => {
       const el = document.querySelector(selector), style = getComputedStyle(el);
-      return [selector, el.getAttribute('transform'), style.display, style.opacity, style.transform];
+      return [selector, el.getAttribute('transform'), el.getAttribute('d'), style.display, style.opacity, style.transform];
     }),
     boxes: [...document.querySelectorAll('#boxes button')].map(el => [el.dataset.key, rect(el)]),
     objects: ['v60', 'phone', 'polaroid', 'envelope'].map(key => rect(document.getElementById(`obj-${key}`))),
@@ -50,9 +51,13 @@ const sample = (page, key) => page.evaluate(section => new Promise(resolve => {
   function frame(now) {
     let value;
     if (section === 'work') value = [opacity('screen-glow'), opacity('code')];
-    if (section === 'coffee') value = [matrix('tilt-v60').b, matrix('coffee-puddle').a,
-      parseFloat(getComputedStyle(document.getElementById('coffee-stream')).strokeDashoffset),
-      getComputedStyle(document.getElementById('spill')).display !== 'none'];
+    if (section === 'coffee') {
+      const face = matrix('v60-top');
+      value = [face.e, matrix('coffee-puddle').a,
+        parseFloat(getComputedStyle(document.getElementById('coffee-stream')).strokeDashoffset),
+        getComputedStyle(document.getElementById('spill')).display !== 'none',
+        face.a * face.d - face.b * face.c, opacity('v60-side'), opacity('z-v60')];
+    }
     if (section === 'trade') value = [matrix('anim-phone').f, matrix('candles').d];
     if (section === 'about') value = [matrix('anim-polaroid').b, opacity('photo')];
     if (section === 'contact') value = [matrix('flap').d, matrix('letter').f, opacity('letter')];
@@ -86,12 +91,25 @@ for (const [index, key] of ORDER.entries()) test(`${key} reacts before zoom, res
     if (key === 'coffee') {
       expect(frames.some(frame => frame.value[3] && frame.value[2] < .8)).toBe(true);
       expect(frames.some(frame => frame.value[1] > .4 && frame.value[1] < 1)).toBe(true);
+      const beforeSpill = frames.filter(frame => !frame.value[3] || frame.value[2] >= .8);
+      expect(beforeSpill.some(frame => frame.value[4] < .35 && frame.value[5] > .5)).toBe(true);
+      expect(frames.some(frame => frame.value[0] < -50 && frame.value[4] < .35 && frame.value[5] > .5)).toBe(true);
+      expect(frames.filter(frame => frame.value[4] > .95).every(frame => frame.value[2] >= .99)).toBe(true);
+      expect(frames.some(frame => frame.value[6] < .4)).toBe(true);
     }
     await expect(html(page)).toHaveAttribute('data-state', 'section');
     await expect(page.locator(`#${key}-h`)).toBeFocused();
     await expect.poll(() => covers(page, key)).toBe(true);
     if (key === 'coffee' || key === 'contact') {
       await expect(page.locator(key === 'coffee' ? '#coffee-puddle' : '#letter')).toBeVisible();
+    }
+    if (key === 'coffee') {
+      const rimGap = await page.evaluate(() => {
+        const m = document.querySelector('#v60-top').transform.baseVal.getItem(0).matrix;
+        const start = document.querySelector('#coffee-stream').getAttribute('d').match(/-?\d*\.?\d+/g).slice(0, 2).map(Number);
+        return Math.hypot(start[0] - (-90 * m.a + 52 * m.c + m.e), start[1] - (-90 * m.b + 52 * m.d + m.f));
+      });
+      expect(rimGap).toBeLessThan(.1);
     }
     await page.keyboard.press('Escape');
     await deskReady(page);

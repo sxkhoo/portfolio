@@ -161,7 +161,7 @@ export function gsapMotion({ gsap, cam, hud, boxes }) {
     open(key, meas) {
       finish();
       const tl = gsap.timeline();
-      const zoomAt = .65;
+      const zoomAt = key === 'coffee' ? 1.02 : .65;
       const items = boxes.elements(), box = items.find(i => i.key === key).el;
       const obj = document.getElementById('obj-' + SECTIONS[key].object);
       objects.timelineFor(key, tl);

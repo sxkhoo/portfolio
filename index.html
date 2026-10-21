@@ -64,6 +64,9 @@
     <clipPath id="cp-phone"><rect x="8" y="8" width="134" height="294" rx="19"/></clipPath>
     <clipPath id="cp-screen"><rect x="14" y="14" width="452" height="270" rx="6"/></clipPath>
     <radialGradient id="g-screen" cx=".5" cy=".2" r=".9"><stop offset="0" stop-color="#7fd4ff" stop-opacity=".2"/><stop offset="1" stop-color="#7fd4ff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="g-cup-side" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fffdf5"/><stop offset=".5" stop-color="#e8dfce"/><stop offset="1" stop-color="#bfb39b"/>
+    </linearGradient>
   </defs>
 
   <rect x="-2000" y="-2000" width="6000" height="6000" fill="url(#g-wood)"/>
@@ -176,18 +179,25 @@
   <g id="obj-v60" class="obj" aria-hidden="true">
     <g id="anim-v60">
       <g id="tilt-v60">
-        <path d="M86-14a30 30 0 0 1 0 50" fill="none" stroke="#e3dccf" stroke-width="16" stroke-linecap="round"/>
-        <rect x="-142" y="-15" width="50" height="30" rx="12" fill="#f5f1e9" stroke="#d6cebf" stroke-width="2"/>
-        <circle r="104" fill="#f5f1e9" stroke="#d6cebf" stroke-width="2"/>
-        <circle r="88" fill="url(#g-paper)"/>
-        <path d="M0-88V-50" stroke="#ddd5c6" stroke-width="2"/>
-        <circle id="z-v60" r="50" fill="url(#g-coffee)"/>
-        <g id="bloom" fill="#b3824f"></g>
+        <g id="v60-side" opacity="0" pointer-events="none">
+          <path id="v60-body" d="" fill="url(#g-cup-side)" stroke="#c5baa5" stroke-width="2"/>
+          <path id="v60-body-shade" d="" fill="#b7a78c" opacity=".22"/>
+        </g>
+        <g id="v60-top">
+          <path d="M86-14a30 30 0 0 1 0 50" fill="none" stroke="#e3dccf" stroke-width="16" stroke-linecap="round"/>
+          <rect x="-142" y="-15" width="50" height="30" rx="12" fill="#f5f1e9" stroke="#d6cebf" stroke-width="2"/>
+          <circle id="v60-mouth" r="104" fill="#f5f1e9" stroke="#d6cebf" stroke-width="2"/>
+          <circle r="88" fill="url(#g-paper)"/>
+          <path d="M0-88V-50" stroke="#ddd5c6" stroke-width="2"/>
+          <circle id="v60-empty" r="50" fill="#a59780" opacity="0"/>
+          <circle id="z-v60" r="50" fill="url(#g-coffee)"/>
+          <g id="bloom" fill="#b3824f"></g>
+        </g>
       </g>
       <g id="spill" aria-hidden="true" pointer-events="none">
-        <path id="coffee-stream" d="M-82 62C-90 88-124 86-142 108" pathLength="1" fill="none" stroke="#5b351a" stroke-width="7" stroke-linecap="round" stroke-dasharray="1" stroke-dashoffset="1"/>
+        <path id="coffee-stream" d="M-90 52C-116 70-132 94-142 108" pathLength="1" fill="none" stroke="#5b351a" stroke-width="7" stroke-linecap="round" stroke-dasharray="1" stroke-dashoffset="1"/>
         <g id="coffee-drops" fill="#7a4a23">
-          <circle cx="-105" cy="4" r="4"/><circle cx="-120" cy="30" r="3"/><circle cx="-93" cy="21" r="2.5"/>
+          <circle cx="-4" cy="0" r="3.5"/><circle cx="4" cy="-10" r="2.5"/><circle cx="-1" cy="-21" r="2"/>
         </g>
       </g>
       <g id="coffee-puddle" aria-hidden="true" pointer-events="none">

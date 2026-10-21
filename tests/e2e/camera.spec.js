@@ -25,10 +25,12 @@ test('each section lands on its activated surface', async ({ page }) => {
 test('zoom readout matches the activated surfaces at 1440x900', async ({ page }) => {
   await gotoVF(page, { introSeen: true, speed: 8 });
   await page.keyboard.press('1');
+  await expect(html(page)).toHaveAttribute('data-state', 'section');
   await expect(page.locator('#zoomx2')).toHaveText('3.8×');
   await page.keyboard.press('Escape');
   await expect(html(page)).toHaveAttribute('data-state', 'desk');
   await page.keyboard.press('2');
+  await expect(html(page)).toHaveAttribute('data-state', 'section');
   await expect(page.locator('#zoomx2')).toHaveText('26.7×');
   await expect.poll(() => covers(page, 'z-coffee-spill')).toBe(true);
 });
