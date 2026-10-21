@@ -1,0 +1,5 @@
+tests/
+docs/
+.superpowers/
+.claude/
+ARCHITECTURE.md
