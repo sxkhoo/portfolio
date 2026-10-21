@@ -11,3 +11,8 @@ test('npm gsap 3.12.5 is byte-identical to the cdnjs build we pin', () => {
   const sri = 'sha512-' + createHash('sha512').update(buf).digest('base64');
   assert.equal(sri, GSAP_SRI);
 });
+
+test('index.html loads GSAP with the pinned integrity hash', () => {
+  const html = readFileSync(new URL('../../index.html', import.meta.url), 'utf8');
+  assert.ok(html.includes(`integrity="${GSAP_SRI}"`));
+});

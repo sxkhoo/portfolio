@@ -13,14 +13,155 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="theme-color" content="#0b0b0c" />
 <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<script src="js/early.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&amp;family=Inter+Tight:wght@500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" />
 <link rel="stylesheet" href="css/site.css" />
+<link rel="stylesheet" href="css/viewfinder.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
 <script type="module" src="js/main.js"></script>
 </head>
 <body>
 <a class="skip" href="#toc">Skip to content</a>
+
+<!-- the desk, seen through the camera. Objects are drawn in local coordinates;
+     js/layout.js places them. Generated detail fills the empty groups. -->
+<div id="cam" class="cam" aria-hidden="true">
+<svg id="scene" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid meet" focusable="false">
+  <defs>
+    <linearGradient id="g-wood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#47311f"/><stop offset=".5" stop-color="#37261a"/><stop offset="1" stop-color="#271a11"/></linearGradient>
+    <radialGradient id="g-lamp" gradientUnits="userSpaceOnUse" cx="980" cy="360" r="1050"><stop offset="0" stop-color="#ffe2b0" stop-opacity=".14"/><stop offset=".45" stop-color="#ffe2b0" stop-opacity=".03"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient>
+    <linearGradient id="g-alu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4d5057"/><stop offset="1" stop-color="#36383e"/></linearGradient>
+    <radialGradient id="g-coffee" cx=".42" cy=".4" r=".65"><stop offset="0" stop-color="#94643a"/><stop offset=".5" stop-color="#5e3a1d"/><stop offset="1" stop-color="#2a170a"/></radialGradient>
+    <radialGradient id="g-paper" cx=".5" cy=".5" r=".5"><stop offset=".5" stop-color="#e6dfd1"/><stop offset="1" stop-color="#fbf9f4"/></radialGradient>
+    <radialGradient id="g-ball" cx=".38" cy=".34" r=".72"><stop offset="0" stop-color="#f39349"/><stop offset="1" stop-color="#a9450f"/></radialGradient>
+    <radialGradient id="g-kettle" cx=".38" cy=".34" r=".7"><stop offset="0" stop-color="#3b3b40"/><stop offset="1" stop-color="#151517"/></radialGradient>
+    <pattern id="p-felt" width="7" height="7" patternUnits="userSpaceOnUse"><rect width="7" height="7" fill="#1f2023"/><circle cx="1.5" cy="1.5" r=".7" fill="#27282c"/><circle cx="5" cy="4.5" r=".6" fill="#1a1b1e"/></pattern>
+    <filter id="f-sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="8" dy="16" stdDeviation="13" flood-color="#000" flood-opacity=".55"/></filter>
+    <filter id="f-sh2" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="3" dy="6" stdDeviation="5" flood-color="#000" flood-opacity=".5"/></filter>
+    <clipPath id="cp-photo"><rect x="15" y="15" width="250" height="156"/></clipPath>
+    <clipPath id="cp-phone"><rect x="8" y="8" width="134" height="294" rx="19"/></clipPath>
+    <clipPath id="cp-screen"><rect x="14" y="14" width="452" height="270" rx="6"/></clipPath>
+  </defs>
+
+  <rect x="-2000" y="-2000" width="6000" height="6000" fill="url(#g-wood)"/>
+  <g id="grain" fill="none" stroke="#7a553a" opacity=".2"></g>
+  <rect id="mat" rx="28" fill="url(#p-felt)" filter="url(#f-sh2)"/>
+  <rect id="mat-stitch" rx="20" fill="none" stroke="#303136" stroke-width="2" stroke-dasharray="7 6"/>
+
+  <g id="obj-ball" class="obj">
+    <circle r="128" fill="url(#g-ball)" filter="url(#f-sh)"/>
+    <g stroke="#3b1a07" stroke-width="5" fill="none" stroke-linecap="round" opacity=".9">
+      <path d="M-128 0H128"/><path d="M0-128V128"/>
+      <path d="M-92-89C-38-40-38 40-92 89"/><path d="M92-89C38-40 38 40 92 89"/>
+    </g>
+  </g>
+
+  <g id="obj-phone" class="obj">
+    <rect width="150" height="310" rx="26" fill="#0d0d10" stroke="#34343a" stroke-width="3" filter="url(#f-sh)"/>
+    <rect id="z-phone" x="8" y="8" width="134" height="294" rx="19" fill="#050906"/>
+    <g clip-path="url(#cp-phone)" font-family="JetBrains Mono, monospace">
+      <text x="20" y="40" font-size="8" fill="#e6efe9">9:41</text>
+      <text x="18" y="74" font-size="10" font-weight="700" fill="#e6efe9">BTCUSDT</text>
+      <text x="18" y="87" font-size="7" fill="#7f9a8a">perp · 1h</text>
+      <path d="M8 120H142M8 150H142M8 180H142" stroke="#13251b" stroke-width="1"/>
+      <g id="candles"></g>
+      <g id="vol" fill="#1d3a2a"></g>
+      <rect x="18" y="258" width="114" height="24" rx="12" fill="#0f2419"/>
+      <text x="75" y="273" font-size="7.5" fill="#34D399" text-anchor="middle">+ journal this trade</text>
+    </g>
+    <rect x="55" y="15" width="40" height="11" rx="5.5" fill="#000"/>
+  </g>
+
+  <g id="obj-laptop" class="obj">
+    <rect width="480" height="600" rx="18" fill="url(#g-alu)" filter="url(#f-sh)"/>
+    <rect width="480" height="298" rx="18" fill="#141518"/>
+    <rect id="z-laptop" x="14" y="14" width="452" height="270" rx="6" fill="#0a1020"/>
+    <g clip-path="url(#cp-screen)">
+      <rect x="14" y="14" width="452" height="18" fill="#111a2f"/>
+      <circle cx="25" cy="23" r="3" fill="#ff5f57"/><circle cx="35" cy="23" r="3" fill="#febc2e"/><circle cx="45" cy="23" r="3" fill="#28c840"/>
+      <text x="240" y="26" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#7d8bb3" text-anchor="middle">inspect.py — jetson-orin</text>
+      <g id="code"></g>
+      <g transform="translate(212 42)">
+        <rect width="244" height="208" rx="4" fill="#0f4030"/>
+        <g stroke="#caa24c" stroke-width="1.3" fill="none" opacity=".7">
+          <path d="M8 28H78V64H96"/><path d="M8 168H56V118H96"/><path d="M236 36H188V84H156"/><path d="M236 182H166V140H156"/><path d="M126 200V136"/><path d="M126 8V64"/>
+        </g>
+        <rect x="96" y="64" width="60" height="72" rx="3" fill="#15171a"/>
+        <g id="pins" fill="#a8adb3"></g>
+        <rect x="30" y="98" width="16" height="7" rx="1.5" fill="#dcc9a0"/>
+        <rect x="176" y="150" width="16" height="7" rx="1.5" fill="#dcc9a0"/>
+        <circle cx="200" cy="58" r="9" fill="#24262a" stroke="#8b9097" stroke-width="1.5"/>
+        <circle cx="40" cy="50" r="6" fill="#24262a" stroke="#8b9097" stroke-width="1.2"/>
+        <rect x="88" y="56" width="76" height="88" fill="none" stroke="#C8FF3E" stroke-width="1.6"/>
+        <rect x="88" y="45" width="44" height="11" fill="#C8FF3E"/>
+        <text x="91" y="53.5" font-family="JetBrains Mono, monospace" font-size="7" font-weight="700" fill="#0b0c0e">ok 0.98</text>
+        <rect x="170" y="144" width="28" height="19" fill="none" stroke="#FF5A5F" stroke-width="1.6"/>
+        <rect x="170" y="133" width="60" height="11" fill="#FF5A5F"/>
+        <text x="173" y="141.5" font-family="JetBrains Mono, monospace" font-size="7" font-weight="700" fill="#fff">defect 0.93</text>
+      </g>
+      <text x="24" y="276" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#6c7aa6">golden-ref diff · zero-shot · 0 labelled defects</text>
+    </g>
+    <rect y="298" width="480" height="9" fill="#2a2c31"/>
+    <rect x="34" y="322" width="412" height="152" rx="10" fill="#27292d"/>
+    <g id="keys" fill="#1b1c20"></g>
+    <rect x="160" y="490" width="160" height="96" rx="10" fill="#42454c" stroke="#50535b"/>
+  </g>
+
+  <g id="obj-polaroid" class="obj">
+    <rect width="280" height="222" rx="5" fill="#f6f4ef" filter="url(#f-sh)"/>
+    <rect id="z-polaroid" x="15" y="15" width="250" height="156" fill="#1c1d20"/>
+    <image id="photo" x="15" y="15" width="250" height="156" preserveAspectRatio="xMidYMid slice" clip-path="url(#cp-photo)"/>
+    <rect id="z-face" x="126" y="104" width="28" height="36" fill="none"/>
+    <text x="140" y="204" text-anchor="middle" font-family="Caveat, cursive" font-size="22" fill="#3b3b3b">ksx · somewhere cold</text>
+    <rect x="104" y="-12" width="72" height="24" fill="#efe3c3" opacity=".82" transform="rotate(-5 140 0)"/>
+  </g>
+
+  <g id="obj-pick" class="obj">
+    <path d="M0-22C18-22 26-12 22 0C16 16 6 26 0 28C-6 26-16 16-22 0C-26-12-18-22 0-22Z" fill="#e8b23a" stroke="#b9861d" stroke-width="1.5" filter="url(#f-sh2)"/>
+  </g>
+
+  <g id="obj-pencil" class="obj">
+    <g filter="url(#f-sh2)">
+      <rect x="-18" width="18" height="16" rx="3" fill="#e57373"/><rect x="-4" width="8" height="16" fill="#c4c4c4"/>
+      <rect x="4" width="256" height="16" fill="#f2c94c"/><polygon points="260,0 292,8 260,16" fill="#ead8b2"/><polygon points="282,5 292,8 282,11" fill="#333"/>
+    </g>
+  </g>
+
+  <g id="obj-beans" class="obj"></g>
+
+  <g id="obj-v60" class="obj">
+    <path d="M86-14a30 30 0 0 1 0 50" fill="none" stroke="#e3dccf" stroke-width="16" stroke-linecap="round" filter="url(#f-sh2)"/>
+    <rect x="-142" y="-15" width="50" height="30" rx="12" fill="#f5f1e9" stroke="#d6cebf" stroke-width="2"/>
+    <circle r="104" fill="#f5f1e9" stroke="#d6cebf" stroke-width="2" filter="url(#f-sh)"/>
+    <circle r="88" fill="url(#g-paper)"/>
+    <path d="M0-88V-50" stroke="#ddd5c6" stroke-width="2"/>
+    <circle id="z-v60" r="50" fill="url(#g-coffee)"/>
+    <g id="bloom" fill="#b3824f"></g>
+  </g>
+
+  <g id="obj-kettle" class="obj">
+    <path d="M-72-30C-104-40-122-62-138-100" fill="none" stroke="#1a1a1d" stroke-width="11" stroke-linecap="round" filter="url(#f-sh2)"/>
+    <path d="M-138-100L-146-122" fill="none" stroke="#1a1a1d" stroke-width="6" stroke-linecap="round"/>
+    <path d="M66-44C134-44 134 44 66 44" fill="none" stroke="#19191b" stroke-width="15" stroke-linecap="round" filter="url(#f-sh2)"/>
+    <circle r="80" fill="url(#g-kettle)" filter="url(#f-sh)"/>
+    <circle r="46" fill="#26262a" stroke="#121214" stroke-width="2"/>
+    <circle r="14" fill="#0e0e10"/><circle cx="-4" cy="-5" r="4" fill="#45454b"/>
+  </g>
+
+  <g id="obj-envelope" class="obj">
+    <rect id="z-envelope" width="300" height="190" rx="4" fill="#ece2cd" filter="url(#f-sh2)"/>
+    <path d="M0 190L128 96M300 190L172 96" stroke="#d8cbb0" stroke-width="1.5" fill="none"/>
+    <path d="M1 1L150 112L299 1Z" fill="#e3d6bb" stroke="#d1c2a2" stroke-width="1.5"/>
+    <path d="M150 84c10 0 14 4 22 6c8 3 6 12 2 18c-3 6 2 14-6 18c-7 3-12-2-18-1c-7 1-12 6-18 1c-6-5 0-11-3-17c-3-6-9-12-2-18c6-5 13-7 23-7z" fill="#5b3fc4"/>
+    <circle cx="150" cy="108" r="17" fill="none" stroke="#4630a0" stroke-width="2"/>
+    <text x="150" y="114" text-anchor="middle" font-family="Caveat, cursive" font-weight="700" font-size="19" fill="#d9ccff">ksx</text>
+  </g>
+
+  <rect x="-2000" y="-2000" width="6000" height="6000" fill="url(#g-lamp)" pointer-events="none"/>
+</svg>
+</div>
 
 <header class="ident">
   <p class="status"><i aria-hidden="true"></i>open to internships · SG / remote</p>
@@ -172,5 +313,7 @@
     </div>
   </section>
 </main>
+
+<div id="boot" aria-hidden="true"><p>CAM 01<br />SENSOR ▮▮▮▮▮ OK</p></div>
 </body>
 </html>
