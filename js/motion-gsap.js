@@ -52,10 +52,10 @@ export function gsapMotion({ gsap, cam, hud, boxes }) {
       .to(scan, { y: vh + 10, duration: D, ease: 'power1.inOut' }, 0)
       .to(scan, { opacity: 0, duration: .15 }, D - .1)
       .add(() => hud.setCount(items.length), D / 2);
-    for (const { el, top, tag, label } of items) {
+    for (const { key, el, top } of items) {
       const at = Math.max(0, Math.min(1, top / vh)) * D;
       tl.fromTo(el, { opacity: 0, scale: 1.12 }, { opacity: 1, scale: 1, duration: .32, ease: 'back.out(2)', clearProps: 'opacity,scale' }, at)
-        .add(() => scramble(tag, label, 14), at);
+        .add(() => boxes.revealLabel(key), at);
     }
     return tl;
   }

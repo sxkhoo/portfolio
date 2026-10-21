@@ -10,8 +10,8 @@
 
   // web fonts load without blocking the first paint (fonts swap in when ready;
   // without JS the page simply uses system fonts)
-  var fonts = document.createElement('link');
-  fonts.rel = 'stylesheet';
-  fonts.href = 'https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter+Tight:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap';
-  document.head.appendChild(fonts);
+  var fonts = document.getElementById('vf-fonts');
+  var caveat = document.getElementById('vf-caveat');
+  if (fonts) fonts.rel = 'stylesheet';
+  if (caveat) caveat.rel = 'stylesheet';
 })();

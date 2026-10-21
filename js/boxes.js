@@ -54,6 +54,10 @@ export function createBoxes(root, { onOpen }) {
       }
     },
     setVisible(on) { root.classList.toggle('on', on); },
+    revealLabel(key) {
+      const { el, tag, label } = boxes[key];
+      scramble(tag, DECOR[key] && el.matches(':hover') ? DECOR[key].quip : label, 14);
+    },
     elements: () => Object.entries(boxes).map(([key, { el, tag, label }]) => ({ key, el, tag, label, top: parseFloat(el.style.top) || 0 })),
     lock(key) { for (const [k, { el }] of Object.entries(boxes)) el.classList.toggle('lock', k === key); },
     // follow an object while the camera moves (unclamped: it grows past the screen)

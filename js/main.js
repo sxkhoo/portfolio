@@ -127,14 +127,31 @@ addEventListener('hashchange', () => dispatch({ type: 'ROUTE', target: parseHash
 
 const DESK_HINT = 'click an object to focus · 1–5';
 let photoOk = null, skipRequested = false, swallowClick = false;
+let interruptPreload = null;
 
 // fonts + photo, so the autofocus lands on something; never wait more than 2.5 s
 function preload() {
-  const img = new Image();
-  const loaded = new Promise(resolve => { img.onload = () => resolve(true); img.onerror = () => resolve(false); });
-  img.src = photo.getAttribute('href');
-  const cap = new Promise(resolve => setTimeout(() => resolve(false), 2500));
-  return Promise.race([Promise.all([loaded, document.fonts.ready]).then(([ok]) => ok), cap]);
+  return new Promise(resolve => {
+    const img = new Image();
+    let settled = false;
+    const cap = setTimeout(() => settle(false), 2500);
+    const settle = ok => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(cap);
+      img.onload = img.onerror = null;
+      interruptPreload = null;
+      resolve(ok);
+    };
+    const loaded = new Promise(resolve => {
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+    });
+    Promise.all([loaded, document.fonts.ready]).then(([ok]) => settle(ok));
+    img.src = photo.getAttribute('href');
+    if (skipRequested) settle(false);
+    else interruptPreload = settle;
+  });
 }
 
 async function runIntro(remember) {
@@ -145,8 +162,9 @@ async function runIntro(remember) {
   hud.cursor(false);
   hud.setHint('click or any key → skip');
   skipRequested = false;
-  photoOk ??= await preload();
-  const ready = motion.intro(meas, { photoOk });
+  const readyPhoto = photoOk ?? await preload();
+  if (!skipRequested) photoOk = readyPhoto;
+  const ready = motion.intro(meas, { photoOk: readyPhoto });
   if (skipRequested) motion.finish();
   await ready;
   if (remember) markIntroSeen(getStorage(window));
@@ -164,6 +182,7 @@ function skipIntro(e) {
   e.stopPropagation();
   if (e.type === 'pointerdown') swallowClick = true;
   skipRequested = true;
+  interruptPreload?.(false);
   motion.finish();
 }
 addEventListener('keydown', skipIntro, true);
@@ -209,6 +228,11 @@ if (deepLink) {
   motion.frame(deepLink, meas);
   sections.show(deepLink, 200);
   html.classList.add('vf-ready');
+  if (!history.state?.vf) {
+    const sectionUrl = location.href;
+    history.replaceState(null, '', location.pathname + location.search);
+    history.pushState({ vf: 1 }, '', sectionUrl);
+  }
 } else if (motion.animated && !introSeen(getStorage(window))) {
   runIntro(true); // lifts the boot screen itself
 } else {

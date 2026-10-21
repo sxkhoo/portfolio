@@ -31,7 +31,7 @@ for (const [w, h] of VIEWPORTS) test(`boxes and tags stay on screen at ${w}x${h}
 });
 
 test('decor is not a control', async ({ page }) => {
-  await gotoVF(page, { introSeen: true });
+  await gotoVF(page, { introSeen: true, speed: .5 }); // hover while the scan is still revealing labels
   await expect(page.locator('.box.decor')).toHaveCount(2);
   await expect(page.locator('.box[data-key="ball"]')).toHaveAttribute('aria-hidden', 'true');
   expect(await page.locator('.box[data-key="ball"]').evaluate(el => el.tabIndex)).toBe(-1);

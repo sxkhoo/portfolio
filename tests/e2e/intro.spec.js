@@ -3,6 +3,7 @@ import { gotoVF, ORDER, SECTIONS, inside, rectOf } from './helpers.js';
 
 const html = page => page.locator('html');
 const KEY = 'ksx-viewfinder-intro-v1';
+const PHOTO = new URL('../../img/pfp-1280.webp', import.meta.url).pathname;
 
 test('first visit plays once and remembers', async ({ page }) => {
   await gotoVF(page, { speed: 8 });
@@ -74,6 +75,53 @@ test('[review] resize during the intro lands on a laid-out desk', async ({ page 
 test('photo blocked: straight to the desk', async ({ page }) => {
   await gotoVF(page, { speed: 1, blockPhoto: true });
   await expect(html(page)).toHaveAttribute('data-state', 'desk', { timeout: 4000 });
+});
+
+test('a key skips a stalled preload immediately and late assets cannot restart', async ({ page }) => {
+  const pending = [];
+  await page.route(/img\/pfp-\d+\.webp/, route => pending.push(route));
+  await gotoVF(page, { speed: 8, waitUntil: 'domcontentloaded' });
+  await expect(html(page)).toHaveAttribute('data-state', 'intro');
+
+  const started = Date.now();
+  await page.keyboard.press('x');
+  await expect(html(page)).toHaveAttribute('data-state', 'desk', { timeout: 1000 });
+  expect(Date.now() - started).toBeLessThan(1000);
+
+  await Promise.all(pending.splice(0).map(route => route.fulfill({ path: PHOTO, contentType: 'image/webp' })));
+  await page.waitForTimeout(100);
+  await expect(html(page)).toHaveAttribute('data-state', 'desk');
+  await expect(html(page)).toHaveAttribute('data-intro', 'played');
+});
+
+test('a later replay can use a photo released after an interrupted preload', async ({ page }) => {
+  const pending = [];
+  await page.route(/img\/pfp-\d+\.webp/, route => pending.push(route));
+  await gotoVF(page, { speed: 8, waitUntil: 'domcontentloaded' });
+  await expect(html(page)).toHaveAttribute('data-state', 'intro');
+
+  await page.keyboard.press('x');
+  await expect(html(page)).toHaveAttribute('data-state', 'desk', { timeout: 1000 });
+  await page.unroute(/img\/pfp-\d+\.webp/);
+  await Promise.all(pending.splice(0).map(route => route.fulfill({ path: PHOTO, contentType: 'image/webp' })));
+
+  await page.locator('#replay').click();
+  await expect(html(page)).toHaveAttribute('data-state', 'intro');
+  await expect(html(page)).toHaveAttribute('data-state', 'desk', { timeout: 3000 });
+  await expect(page.locator('#facebox .tag')).toHaveAttribute('data-label', 'khoo_shi_xian 0.99');
+});
+
+test('[review] a tap during a stalled preload skips and swallows its click', async ({ page }) => {
+  await page.route(/img\/pfp-\d+\.webp/, () => {});
+  await gotoVF(page, { speed: 8, waitUntil: 'domcontentloaded' });
+  await expect(html(page)).toHaveAttribute('data-state', 'intro');
+
+  const box = await rectOf(page, '.box[data-key="work"]');
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+  await expect(html(page)).toHaveAttribute('data-state', 'desk', { timeout: 1000 });
+  await page.waitForTimeout(500);
+  await expect(html(page)).toHaveAttribute('data-state', 'desk');
+  expect(await page.evaluate(() => location.hash)).toBe('');
 });
 
 test('deep link on a first visit skips and does not mark seen', async ({ page }) => {

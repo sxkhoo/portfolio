@@ -10,7 +10,7 @@ css/
   site.css              — tokens/colours, type, plain-document layout (no JS), content components
   viewfinder.css        — everything under html.js: camera, HUD, boxes, overlays, section bar, intro, responsive
 js/
-  early.js              — sync in <head>: adds html.js (6 s failsafe), injects the web-font stylesheet so it never blocks paint
+  early.js              — sync in <head>: adds html.js (6 s failsafe), activates the two font stylesheet preloads defined in index.html
   main.js               — controller: boot, fit/measure, dispatch + effects, routing/history, input, resize, intro gating
   config.js             — ORDER, SECTIONS (object/target/label/conf/name), DECOR, INTRO_KEY
   state.js              — pure reducer: intro|desk|opening|section|closing|hopping, queued routes
@@ -19,7 +19,7 @@ js/
   camera.js             — pure maths: svgScale, fitCamera, restCamera, lerpCamera, toTransform
   layout.js             — LAYOUTS (landscape/portrait: viewBox, mat, object x/y/tilt/scale) + pickLayout
   scene.js              — decorate (seeded detail), applyLayout, measure → Meas, photoHref
-  boxes.js              — detection-box buttons + decor labels: place, track, lock, inert
+  boxes.js              — detection-box buttons + decor labels: place, track, lock, inert; reveal labels respect hover
   hud.js                — timecode, zoom readout, object count, hint, desk reticle
   sections.js           — show/hide section overlays, chips, heading focus
   motion.js             — Motion factory + static driver (fades only)
@@ -39,7 +39,7 @@ tests/
   unit/                 — node:test: pure modules, GSAP SRI pin, headers/CSP markup, asset budgets
   e2e/                  — Playwright specs + helpers.js (gotoVF, rectOf, VIEWPORTS)
   fixtures/parity.json  — every content string from the pre-redesign site (ab6b1f5)
-  scripts/              — images.mjs (photo sizes + shadow sprite), og.mjs (link-preview render)
+  scripts/              — images.mjs (photo sizes + shadow sprite), og.mjs (link-preview render), serve.py (gzip + security-header audit preview)
 docs/superpowers/       — design spec + implementation plan
 ```
 
@@ -64,7 +64,9 @@ index.html
 ## Key Patterns
 
 - **One state machine.** All navigation goes through `reduce()`; `enter()` runs effects only when mode or key changes. Input is ignored during moves; routes that arrive mid-move are queued (last wins) and applied on arrival.
-- **The URL follows the view.** Opening from the desk pushStates `#key` (state `{vf:1}`); hops replaceState; closing uses `history.back()` when we pushed, else replaceState. `hashchange` is the only external route source.
+- **The URL follows the view.** Opening from the desk pushStates `#key` (state `{vf:1}`); hops replaceState; closing uses `history.back()` when we pushed, else replaceState. Initial deep links seed a desk entry before their section, preserving the query; managed entries are reused on reload. `hashchange` is the only external route source.
+- **Intro preload can be interrupted.** Photo and font readiness share a 2.5 s cap. A skip settles this wait immediately; late loads cannot restart the opening. Cancelled photo results are retried on replay.
+- **Fonts have one URL source.** `index.html` preloads the Inter Tight/JetBrains Mono stylesheet and a separate Caveat stylesheet. The Caveat `text=` subset covers the caption, seal and signature; update its characters when adding handwritten copy. `early.js` activates those same links without another request. A stalled font server still permits boot and first paint.
 - **Camera = focus-point Cam `{ox, oy, rotation, scale}`.** Measure at rest (`measure()` clears the transform), fit with `fitCamera`, move with `lerpCamera` (dip > 0 pulls back mid-move), apply with `toTransform` through `gsap.set`.
 - **Motion seam.** `createMotion` returns the GSAP driver or the static one (reduced motion / GSAP missing). New animation needs both.
 - **Single sources.** Geometry (positions, tilt, scale) lives only in `layout.js`; colours only in CSS (`--c-<key>`); section metadata only in `config.js`.
@@ -76,11 +78,13 @@ index.html
 
 - `index.html` → `js/early.js` (head) → GSAP (defer) → `js/main.js` (module, boots on load). Every module is listed as `<link rel="modulepreload">` in the head — add new modules there too.
 - Served locally on port 4173 (same server Playwright uses).
+- Lighthouse uses the audit preview on port 4174, with gzip and the security headers read from `vercel.json`.
 
 ## Run Commands
 
 ```
 python3 -m http.server 4173 --bind 127.0.0.1                 # serve the site
+python3 tests/scripts/serve.py                               # compressed audit preview on :4174
 cd tests && npm test                                         # unit + e2e (chromium, webkit)
 cd tests && PERF=1 npx playwright test -g "long frames|hop is one move|within 4s" --project=chromium --workers=1
 node tests/scripts/images.mjs && node tests/scripts/og.mjs   # regenerate assets (og.mjs needs the server)

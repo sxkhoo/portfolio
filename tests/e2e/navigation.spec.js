@@ -59,6 +59,46 @@ for (const mode of [{ reducedMotion: 'reduce' }, { blockGsap: true }]) test.desc
     }
   });
 
+  test('initial deep links seed desk history without reload duplication', async ({ page }) => {
+    await page.goto('/favicon.svg');
+    await gotoVF(page, { hash: '#work', ...mode });
+    await expect(state(page)).toHaveAttribute('data-section', 'work');
+    await expect(state(page)).toHaveAttribute('data-state', 'section');
+
+    const depth = await page.evaluate(() => history.length);
+    await page.reload();
+    await expect(state(page)).toHaveAttribute('data-section', 'work');
+    await expect(state(page)).toHaveAttribute('data-state', 'section');
+    expect(await page.evaluate(() => history.length)).toBe(depth);
+
+    await page.goBack();
+    await expect(state(page)).toHaveAttribute('data-state', 'desk');
+    expect(await page.evaluate(() => location.hash)).toBe('');
+    expect(await page.evaluate(() => location.search)).toBe(`?vfspeed=${mode.speed ?? 1}`);
+    await page.goForward();
+    await expect(state(page)).toHaveAttribute('data-section', 'work');
+    await expect(state(page)).toHaveAttribute('data-state', 'section');
+  });
+});
+
+test('animated deep links seed the full history chain', async ({ page }) => {
+  await page.goto('/favicon.svg');
+  await gotoVF(page, { hash: '#work', speed: 8 });
+  await expect(state(page)).toHaveAttribute('data-section', 'work');
+  await expect(state(page)).toHaveAttribute('data-state', 'section');
+
+  await page.goBack();
+  await expect(state(page)).toHaveAttribute('data-state', 'desk');
+  await page.goBack();
+  await expect(page).toHaveURL(/\/favicon\.svg$/);
+  await page.goForward();
+  await expect(state(page)).toHaveAttribute('data-state', 'desk');
+  await page.goForward();
+  await expect(state(page)).toHaveAttribute('data-section', 'work');
+  await expect(state(page)).toHaveAttribute('data-state', 'section');
+});
+
+for (const mode of [{ reducedMotion: 'reduce' }, { blockGsap: true }]) test.describe(JSON.stringify(mode), () => {
   test('#home, #top and unknown hashes show the desk', async ({ page }) => {
     for (const hash of ['#home', '#top', '#foo']) {
       await gotoVF(page, { hash, introSeen: true, ...mode });

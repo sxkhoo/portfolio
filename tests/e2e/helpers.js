@@ -9,7 +9,7 @@ export const VIEWPORTS = [[1024, 768], [1366, 657], [1440, 900], [1920, 1080], [
 
 // open the site in a controlled way: no web fonts, GSAP served locally (byte-identical
 // to the pinned cdnjs build, so SRI still passes), optional blocks and motion setting
-export async function gotoVF(page, { hash = '', introSeen = false, speed = 1, reducedMotion = 'no-preference', blockGsap = false, blockPhoto = false } = {}) {
+export async function gotoVF(page, { hash = '', introSeen = false, speed = 1, reducedMotion = 'no-preference', blockGsap = false, blockPhoto = false, waitUntil = 'load' } = {}) {
   // empty stylesheet rather than an abort, so blocked fonts don't log console errors
   await page.route(/fonts\.(googleapis|gstatic)\.com/, r => r.fulfill({ status: 200, contentType: 'text/css', body: '' }));
   await page.route(/cdnjs\.cloudflare\.com\/ajax\/libs\/gsap\//, r => blockGsap
@@ -18,7 +18,7 @@ export async function gotoVF(page, { hash = '', introSeen = false, speed = 1, re
   if (blockPhoto) await page.route(/img\/pfp-\d+\.webp/, r => r.abort());
   if (introSeen) await page.addInitScript(key => { try { localStorage.setItem(key, '1'); } catch {} }, 'ksx-viewfinder-intro-v1');
   await page.emulateMedia({ reducedMotion });
-  await page.goto(`/?vfspeed=${speed}${hash}`);
+  await page.goto(`/?vfspeed=${speed}${hash}`, { waitUntil });
 }
 
 // geometry box of an element. Playwright's boundingBox() in WebKit includes SVG
