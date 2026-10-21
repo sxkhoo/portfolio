@@ -17,7 +17,9 @@ export function createSections(root, { onBack, onJump }) {
       el.style.transitionDuration = ms + 'ms';
       el.classList.add('is-open');
       el.scrollTop = 0;
-      requestAnimationFrame(() => el.classList.add('is-visible')); // next frame, so the fade runs
+      requestAnimationFrame(() => {
+        if (current === key) el.classList.add('is-visible'); // skip a stale fade after navigation
+      });
       chips.forEach(c => {
         const on = c.dataset.k === key;
         c.classList.toggle('on', on);

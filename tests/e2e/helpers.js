@@ -1,6 +1,6 @@
 import { createRequire } from 'node:module';
 
-export { ORDER, SECTIONS } from '../../js/config.js';
+export { ORDER, SECTIONS, TARGETS } from '../../js/config.js';
 
 const require = createRequire(import.meta.url);
 const GSAP_FILE = require.resolve('gsap/dist/gsap.min.js');

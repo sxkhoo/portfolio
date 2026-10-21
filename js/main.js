@@ -36,6 +36,7 @@ let layout, meas, state, lastKey = null;
 
 // lay the desk out for this screen and re-measure what the camera needs
 function fit() {
+  motion.resetObjects?.(); // measure the resting desk, independent of the current section pose
   const name = pickLayout(innerWidth, innerHeight);
   layout = LAYOUTS[name];
   html.dataset.layout = name;

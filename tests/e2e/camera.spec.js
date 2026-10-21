@@ -1,35 +1,36 @@
 import { test, expect } from '@playwright/test';
-import { gotoVF, ORDER, SECTIONS } from './helpers.js';
+import { gotoVF, ORDER, SECTIONS, TARGETS } from './helpers.js';
 
-// does the object's zoom target fill the whole screen?
-const covers = (page, id) => page.locator(`#z-${id}`).evaluate(el => {
+// does the section's zoom target fill the whole screen?
+const covers = (page, id) => page.locator(`#${id}`).evaluate(el => {
   const r = el.getBoundingClientRect();
   return r.left <= 1 && r.top <= 1 && r.right >= innerWidth - 1 && r.bottom >= innerHeight - 1;
 });
 const html = page => page.locator('html');
 const camAtRest = page => page.locator('#cam').evaluate(el => getComputedStyle(el).transform);
 
-test('each section lands on its object', async ({ page }) => {
+test('each section lands on its activated surface', async ({ page }) => {
   await gotoVF(page, { introSeen: true, speed: 8 });
   for (const [i, k] of ORDER.entries()) {
     await expect(html(page)).toHaveAttribute('data-state', 'desk');
     await page.keyboard.press(String(i + 1));
     await expect(html(page)).toHaveAttribute('data-state', 'section');
-    await expect.poll(() => covers(page, SECTIONS[k].object)).toBe(true);
+    await expect.poll(() => covers(page, TARGETS[k] ?? SECTIONS[k].target)).toBe(true);
     await page.keyboard.press('Escape');
     await expect(html(page)).toHaveAttribute('data-state', 'desk');
   }
   expect(await camAtRest(page)).toMatch(/^(none|matrix\(1, 0, 0, 1, 0, 0\))$/);
 });
 
-test('zoom readout matches the spec at 1440x900', async ({ page }) => {
+test('zoom readout matches the activated surfaces at 1440x900', async ({ page }) => {
   await gotoVF(page, { introSeen: true, speed: 8 });
   await page.keyboard.press('1');
   await expect(page.locator('#zoomx2')).toHaveText('3.8×');
   await page.keyboard.press('Escape');
   await expect(html(page)).toHaveAttribute('data-state', 'desk');
   await page.keyboard.press('2');
-  await expect(page.locator('#zoomx2')).toHaveText('16.2×');
+  await expect(page.locator('#zoomx2')).toHaveText('26.7×');
+  await expect.poll(() => covers(page, 'z-coffee-spill')).toBe(true);
 });
 
 // half speed: the 2 s move keeps every key inside it, even on a loaded test machine
@@ -42,7 +43,7 @@ test('spam during a move ends consistent', async ({ page }) => {
   await expect(html(page)).toHaveAttribute('data-state', 'section', { timeout: 5000 });
   await expect(page).toHaveURL(/#work$/);
   await expect(page.locator('.sec.is-open')).toHaveCount(1);
-  await expect.poll(() => covers(page, 'laptop')).toBe(true);
+  await expect.poll(() => covers(page, TARGETS.work ?? SECTIONS.work.target)).toBe(true);
 });
 
 test('back during a move is applied when it lands', async ({ page }) => {
@@ -78,7 +79,7 @@ test('resizing while zoomed keeps the object framed', async ({ page }) => {
   await expect(html(page)).toHaveAttribute('data-state', 'section');
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.waitForTimeout(300);
-  expect(await covers(page, 'v60')).toBe(true);
+  expect(await covers(page, 'z-coffee-spill')).toBe(true);
 });
 
 // frame timing only means something on an idle machine: run it alone with

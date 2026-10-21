@@ -1,7 +1,7 @@
 // The drawn desk: generated detail, layout, and measurements for the camera.
 // Nothing here touches the DOM at import time.
 
-import { ORDER, SECTIONS } from './config.js';
+import { ORDER, SECTIONS, TARGETS } from './config.js';
 import { svgScale, fitCamera, restCamera, toTransform } from './camera.js';
 
 // mulberry32: seeded, so the desk looks the same on every visit
@@ -109,8 +109,21 @@ export function measure(cam, svg, layout) {
   const targets = {};
   for (const key of ORDER) {
     const { object, target } = SECTIONS[key];
-    const el = svg.getElementById(target), bb = el.getBBox(), o = layout.objects[object], s = o.s ?? 1;
-    targets[key] = fitCamera({ rect: rectOf(el), size: { w: bb.width * s, h: bb.height * s }, tilt: o.r, k, viewport });
+    const targetId = TARGETS[key] ?? target;
+    const el = svg.getElementById(targetId), o = layout.objects[object], s = o.s ?? 1;
+    // Hidden reveal surfaces need layout for measurement, but must never paint
+    // or enlarge the resting object boxes measured above.
+    const owner = key === 'coffee' ? el.closest('#coffee-puddle') : key === 'contact' ? el.closest('#letter') : null;
+    const savedStyle = owner?.getAttribute('style');
+    try {
+      if (owner) Object.assign(owner.style, { display: 'block', opacity: '0', transform: 'none' });
+      const bb = el.getBBox();
+      targets[key] = fitCamera({ rect: rectOf(el), size: { w: bb.width * s, h: bb.height * s }, tilt: o.r, k, viewport });
+    } finally {
+      if (owner) {
+        if (savedStyle === null) owner.removeAttribute('style'); else owner.setAttribute('style', savedStyle);
+      }
+    }
   }
 
   // the face as it sits when the camera frames the polaroid (the opening's first shot)

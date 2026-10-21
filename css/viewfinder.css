@@ -9,6 +9,7 @@ html.js{--hud-dim:rgba(242,239,232,.62);--hud-faint:rgba(242,239,232,.28)}
 /* CAMERA */
 html.js .cam{display:block;position:fixed;inset:0;transform-origin:0 0}
 html.js #scene{display:block;width:100%;height:100%;overflow:visible}
+#spill,#coffee-puddle,#letter{display:none;pointer-events:none}
 
 /* BOOT — covers the screen until main.js is ready, so the desk never flashes */
 html.js #boot{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:#000;pointer-events:none;transition:opacity .2s,visibility 0s .2s}

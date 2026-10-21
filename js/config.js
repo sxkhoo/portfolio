@@ -2,6 +2,13 @@
 
 export const ORDER = ['work', 'coffee', 'trade', 'about', 'contact'];
 
+// Activated coffee/contact settle on newly revealed local-coordinate surfaces,
+// so click, close, hop, deep link and resize share the same camera target.
+export const TARGETS = {
+  coffee: 'z-coffee-spill',
+  contact: 'z-letter',
+};
+
 export const SECTIONS = {
   work: { object: 'laptop', target: 'z-laptop', label: 'laptop', conf: '0.97', name: 'Work' },
   coffee: { object: 'v60', target: 'z-v60', label: 'v60_dripper', conf: '0.94', name: 'Coffee' },
