@@ -21,6 +21,10 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const gsap = !reduced && window.gsap ? window.gsap : null;
 html.classList.toggle('vf-static', !gsap);
 
+// test hook: ?vfspeed=N speeds every animation up N times
+const speed = Number(new URLSearchParams(location.search).get('vfspeed'));
+if (gsap && speed > 0) gsap.globalTimeline.timeScale(speed);
+
 const boxes = createBoxes($('boxes'), { onOpen: key => open(key) });
 const hud = createHud(document.querySelector('.hud'));
 const sections = createSections($('sections'), { onBack: () => close(), onJump: key => jump(key) });
@@ -47,6 +51,8 @@ function dispatch(event) {
   const prev = state, next = reduce(state, event);
   if (next === prev) return;
   state = next;
+  // a route queued during a move only updates `pending`: nothing to run yet
+  if (next.mode === prev.mode && next.key === prev.key) return;
   html.dataset.state = next.mode;
   enter(prev, next);
 }
@@ -72,6 +78,7 @@ async function enter(prev, { mode, key, from }) {
     dispatch({ type: 'ARRIVED' });
   } else if (mode === 'desk') {
     boxes.lock(null);
+    boxes.place(meas.objects, meas.viewport); // the opened box followed its object; put it back
     await motion.reveal({ fast: true });
     if (state.mode !== 'desk') return; // already moving again
     boxes.setInert(false);
@@ -119,8 +126,10 @@ let resizeTimer;
 addEventListener('resize', () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => {
+    motion.finish(); // land the current move first, then re-fit to the new size
     fit();
-    if (state.mode !== 'desk') motion.frame(state.key, meas);
+    const framed = ['opening', 'section', 'hopping'].includes(state.mode) ? state.key : null;
+    motion.frame(framed, meas);
   }, 150);
 });
 

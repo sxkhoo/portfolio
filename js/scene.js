@@ -73,7 +73,7 @@ export function decorate(svg, seed = 7) {
     const x = (rand() - .5) * 110, y = (rand() - .5) * 90, r = (rand() * 180).toFixed(0);
     s += `<g transform="translate(${f(x)} ${f(y)}) rotate(${r})"><ellipse rx="10" ry="7" fill="#4b2b16"/><path d="M-8 1C-3-3 3 3 8-1" stroke="#26150a" stroke-width="1.6" fill="none"/></g>`;
   }
-  $('obj-beans').innerHTML = `<g filter="url(#f-sh2)">${s}</g>`;
+  $('obj-beans').innerHTML = s;
 }
 
 export function applyLayout(svg, layout) {
@@ -83,8 +83,14 @@ export function applyLayout(svg, layout) {
   const set = (el, a) => { for (const k in a) el.setAttribute(k, a[k]); };
   set(svg.getElementById('mat'), { x, y, width: w, height: h });
   set(svg.getElementById('mat-stitch'), { x: x + 13, y: y + 13, width: w - 26, height: h - 26 });
-  for (const [id, o] of Object.entries(layout.objects))
-    svg.getElementById('obj-' + id).setAttribute('transform', `translate(${o.x} ${o.y}) rotate(${o.r}) scale(${o.s ?? 1})`);
+  // shadow sprite: offset (3, 6), inflated 16/224 per side to cover its soft edge
+  const ix = w * 16 / 224, iy = h * 16 / 224;
+  set(svg.getElementById('mat-shadow'), { x: x + 3 - ix, y: y + 6 - iy, width: w + 2 * ix, height: h + 2 * iy });
+  for (const [id, o] of Object.entries(layout.objects)) {
+    const t = `translate(${o.x} ${o.y}) rotate(${o.r}) scale(${o.s ?? 1})`;
+    svg.getElementById('obj-' + id).setAttribute('transform', t);
+    svg.getElementById('shade-' + id)?.setAttribute('transform', t);
+  }
 }
 
 const rectOf = el => { const r = el.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width, height: r.height }; };

@@ -44,6 +44,7 @@ a{color:inherit}
 .sec + .sec .sec-inner{border-top:1px solid var(--line)}
 .sec-k{font:600 11.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin:0}
 .sec-t{font:700 clamp(44px,7.6vw,104px)/.92 var(--sans);letter-spacing:-.045em;margin:18px 0 16px}
+.sec-t:focus{outline:none} /* focused by script so screen readers land on it, not a control */
 .sec-l{font:500 18px/1.5 var(--sans);color:var(--muted);max-width:58ch;margin:0 0 40px}
 .pills{display:flex;flex-wrap:wrap;gap:6px}
 .pills span{font:500 11px/1 var(--mono);padding:6px 9px;border:1px solid var(--line);border-radius:999px}

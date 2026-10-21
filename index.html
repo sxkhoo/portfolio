@@ -38,8 +38,8 @@
     <radialGradient id="g-ball" cx=".38" cy=".34" r=".72"><stop offset="0" stop-color="#f39349"/><stop offset="1" stop-color="#a9450f"/></radialGradient>
     <radialGradient id="g-kettle" cx=".38" cy=".34" r=".7"><stop offset="0" stop-color="#3b3b40"/><stop offset="1" stop-color="#151517"/></radialGradient>
     <pattern id="p-felt" width="7" height="7" patternUnits="userSpaceOnUse"><rect width="7" height="7" fill="#1f2023"/><circle cx="1.5" cy="1.5" r=".7" fill="#27282c"/><circle cx="5" cy="4.5" r=".6" fill="#1a1b1e"/></pattern>
-    <filter id="f-sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="8" dy="16" stdDeviation="13" flood-color="#000" flood-opacity=".55"/></filter>
-    <filter id="f-sh2" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="3" dy="6" stdDeviation="5" flood-color="#000" flood-opacity=".5"/></filter>
+    <!-- shadows are a blurred sprite (img/shadow.png) or this gradient: SVG blur filters stall the zoom -->
+    <radialGradient id="g-shade"><stop offset=".72" stop-color="#000" stop-opacity=".5"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
     <clipPath id="cp-photo"><rect x="15" y="15" width="250" height="156"/></clipPath>
     <clipPath id="cp-phone"><rect x="8" y="8" width="134" height="294" rx="19"/></clipPath>
     <clipPath id="cp-screen"><rect x="14" y="14" width="452" height="270" rx="6"/></clipPath>
@@ -47,11 +47,25 @@
 
   <rect x="-2000" y="-2000" width="6000" height="6000" fill="url(#g-wood)"/>
   <g id="grain" fill="none" stroke="#7a553a" opacity=".2"></g>
-  <rect id="mat" rx="28" fill="url(#p-felt)" filter="url(#f-sh2)"/>
+  <image id="mat-shadow" href="img/shadow.png" preserveAspectRatio="none" opacity=".4"/>
+  <rect id="mat" rx="28" fill="url(#p-felt)"/>
   <rect id="mat-stitch" rx="20" fill="none" stroke="#303136" stroke-width="2" stroke-dasharray="7 6"/>
 
+  <!-- shadows sit in their own layer (positioned like their objects) so boxes hug the objects -->
+  <g id="shades">
+    <g id="shade-ball"><circle cx="8" cy="16" r="150" fill="url(#g-shade)"/></g>
+    <g id="shade-phone"><image href="img/shadow.png" x="-2.7" y="-6.1" width="171.4" height="354.3" preserveAspectRatio="none" opacity=".55"/></g>
+    <g id="shade-laptop"><image href="img/shadow.png" x="-26.3" y="-26.9" width="548.6" height="685.7" preserveAspectRatio="none" opacity=".55"/></g>
+    <g id="shade-polaroid"><image href="img/shadow.png" x="-12" y="0.1" width="320" height="253.7" preserveAspectRatio="none" opacity=".5"/></g>
+    <g id="shade-pick"><ellipse cx="3" cy="6" rx="30" ry="32" fill="url(#g-shade)"/></g>
+    <g id="shade-pencil"><image href="img/shadow.png" x="-37.1" y="2" width="354.3" height="22" preserveAspectRatio="none" opacity=".35"/></g>
+    <g id="shade-v60"><circle cx="8" cy="16" r="124" fill="url(#g-shade)"/></g>
+    <g id="shade-kettle"><circle cx="8" cy="16" r="98" fill="url(#g-shade)"/></g>
+    <g id="shade-envelope"><image href="img/shadow.png" x="-18.4" y="-7.6" width="342.9" height="217.1" preserveAspectRatio="none" opacity=".4"/></g>
+  </g>
+
   <g id="obj-ball" class="obj">
-    <circle r="128" fill="url(#g-ball)" filter="url(#f-sh)"/>
+    <circle r="128" fill="url(#g-ball)"/>
     <g stroke="#3b1a07" stroke-width="5" fill="none" stroke-linecap="round" opacity=".9">
       <path d="M-128 0H128"/><path d="M0-128V128"/>
       <path d="M-92-89C-38-40-38 40-92 89"/><path d="M92-89C38-40 38 40 92 89"/>
@@ -59,7 +73,7 @@
   </g>
 
   <g id="obj-phone" class="obj">
-    <rect width="150" height="310" rx="26" fill="#0d0d10" stroke="#34343a" stroke-width="3" filter="url(#f-sh)"/>
+    <rect width="150" height="310" rx="26" fill="#0d0d10" stroke="#34343a" stroke-width="3"/>
     <rect id="z-phone" x="8" y="8" width="134" height="294" rx="19" fill="#050906"/>
     <g clip-path="url(#cp-phone)" font-family="JetBrains Mono, monospace">
       <text x="20" y="40" font-size="8" fill="#e6efe9">9:41</text>
@@ -75,7 +89,7 @@
   </g>
 
   <g id="obj-laptop" class="obj">
-    <rect width="480" height="600" rx="18" fill="url(#g-alu)" filter="url(#f-sh)"/>
+    <rect width="480" height="600" rx="18" fill="url(#g-alu)"/>
     <rect width="480" height="298" rx="18" fill="#141518"/>
     <rect id="z-laptop" x="14" y="14" width="452" height="270" rx="6" fill="#0a1020"/>
     <g clip-path="url(#cp-screen)">
@@ -110,7 +124,7 @@
   </g>
 
   <g id="obj-polaroid" class="obj">
-    <rect width="280" height="222" rx="5" fill="#f6f4ef" filter="url(#f-sh)"/>
+    <rect width="280" height="222" rx="5" fill="#f6f4ef"/>
     <rect id="z-polaroid" x="15" y="15" width="250" height="156" fill="#1c1d20"/>
     <image id="photo" x="15" y="15" width="250" height="156" preserveAspectRatio="xMidYMid slice" clip-path="url(#cp-photo)"/>
     <rect id="z-face" x="126" y="104" width="28" height="36" fill="none"/>
@@ -119,11 +133,11 @@
   </g>
 
   <g id="obj-pick" class="obj">
-    <path d="M0-22C18-22 26-12 22 0C16 16 6 26 0 28C-6 26-16 16-22 0C-26-12-18-22 0-22Z" fill="#e8b23a" stroke="#b9861d" stroke-width="1.5" filter="url(#f-sh2)"/>
+    <path d="M0-22C18-22 26-12 22 0C16 16 6 26 0 28C-6 26-16 16-22 0C-26-12-18-22 0-22Z" fill="#e8b23a" stroke="#b9861d" stroke-width="1.5"/>
   </g>
 
   <g id="obj-pencil" class="obj">
-    <g filter="url(#f-sh2)">
+    <g>
       <rect x="-18" width="18" height="16" rx="3" fill="#e57373"/><rect x="-4" width="8" height="16" fill="#c4c4c4"/>
       <rect x="4" width="256" height="16" fill="#f2c94c"/><polygon points="260,0 292,8 260,16" fill="#ead8b2"/><polygon points="282,5 292,8 282,11" fill="#333"/>
     </g>
@@ -132,9 +146,9 @@
   <g id="obj-beans" class="obj"></g>
 
   <g id="obj-v60" class="obj">
-    <path d="M86-14a30 30 0 0 1 0 50" fill="none" stroke="#e3dccf" stroke-width="16" stroke-linecap="round" filter="url(#f-sh2)"/>
+    <path d="M86-14a30 30 0 0 1 0 50" fill="none" stroke="#e3dccf" stroke-width="16" stroke-linecap="round"/>
     <rect x="-142" y="-15" width="50" height="30" rx="12" fill="#f5f1e9" stroke="#d6cebf" stroke-width="2"/>
-    <circle r="104" fill="#f5f1e9" stroke="#d6cebf" stroke-width="2" filter="url(#f-sh)"/>
+    <circle r="104" fill="#f5f1e9" stroke="#d6cebf" stroke-width="2"/>
     <circle r="88" fill="url(#g-paper)"/>
     <path d="M0-88V-50" stroke="#ddd5c6" stroke-width="2"/>
     <circle id="z-v60" r="50" fill="url(#g-coffee)"/>
@@ -142,16 +156,16 @@
   </g>
 
   <g id="obj-kettle" class="obj">
-    <path d="M-72-30C-104-40-122-62-138-100" fill="none" stroke="#1a1a1d" stroke-width="11" stroke-linecap="round" filter="url(#f-sh2)"/>
+    <path d="M-72-30C-104-40-122-62-138-100" fill="none" stroke="#1a1a1d" stroke-width="11" stroke-linecap="round"/>
     <path d="M-138-100L-146-122" fill="none" stroke="#1a1a1d" stroke-width="6" stroke-linecap="round"/>
-    <path d="M66-44C134-44 134 44 66 44" fill="none" stroke="#19191b" stroke-width="15" stroke-linecap="round" filter="url(#f-sh2)"/>
-    <circle r="80" fill="url(#g-kettle)" filter="url(#f-sh)"/>
+    <path d="M66-44C134-44 134 44 66 44" fill="none" stroke="#19191b" stroke-width="15" stroke-linecap="round"/>
+    <circle r="80" fill="url(#g-kettle)"/>
     <circle r="46" fill="#26262a" stroke="#121214" stroke-width="2"/>
     <circle r="14" fill="#0e0e10"/><circle cx="-4" cy="-5" r="4" fill="#45454b"/>
   </g>
 
   <g id="obj-envelope" class="obj">
-    <rect id="z-envelope" width="300" height="190" rx="4" fill="#ece2cd" filter="url(#f-sh2)"/>
+    <rect id="z-envelope" width="300" height="190" rx="4" fill="#ece2cd"/>
     <path d="M0 190L128 96M300 190L172 96" stroke="#d8cbb0" stroke-width="1.5" fill="none"/>
     <path d="M1 1L150 112L299 1Z" fill="#e3d6bb" stroke="#d1c2a2" stroke-width="1.5"/>
     <path d="M150 84c10 0 14 4 22 6c8 3 6 12 2 18c-3 6 2 14-6 18c-7 3-12-2-18-1c-7 1-12 6-18 1c-6-5 0-11-3-17c-3-6-9-12-2-18c6-5 13-7 23-7z" fill="#5b3fc4"/>

@@ -3,6 +3,8 @@
 // The static driver is used for reduced motion or when GSAP didn't load:
 // no camera moves, no opening — sections just fade.
 
+import { gsapMotion } from './motion-gsap.js';
+
 const done = () => Promise.resolve();
 
 function staticMotion({ boxes }) {
@@ -19,5 +21,5 @@ function staticMotion({ boxes }) {
 }
 
 export function createMotion(deps) {
-  return staticMotion(deps);
+  return deps.gsap ? gsapMotion(deps) : staticMotion(deps);
 }

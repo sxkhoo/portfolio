@@ -34,7 +34,7 @@ export function createBoxes(root, { onOpen }) {
       el.addEventListener('click', () => onOpen(key));
     }
     root.append(el);
-    boxes[key] = { el, object: def.object };
+    boxes[key] = { el, object: def.object, tag, label };
   }
 
   ORDER.forEach(k => add(k, SECTIONS[k], false));
@@ -54,7 +54,7 @@ export function createBoxes(root, { onOpen }) {
       }
     },
     setVisible(on) { root.classList.toggle('on', on); },
-    elements: () => Object.entries(boxes).map(([key, { el }]) => ({ key, el, top: parseFloat(el.style.top) || 0 })),
+    elements: () => Object.entries(boxes).map(([key, { el, tag, label }]) => ({ key, el, tag, label, top: parseFloat(el.style.top) || 0 })),
     lock(key) { for (const [k, { el }] of Object.entries(boxes)) el.classList.toggle('lock', k === key); },
     // follow an object while the camera moves (unclamped: it grows past the screen)
     track(key, rect) { setBox(boxes[key].el, rect.left - PAD, rect.top - PAD, rect.left + rect.width + PAD, rect.top + rect.height + PAD); },
