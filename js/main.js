@@ -126,7 +126,7 @@ addEventListener('hashchange', () => dispatch({ type: 'ROUTE', target: parseHash
 // ---- the opening
 
 const DESK_HINT = 'click an object to focus · 1–5';
-let photoOk = null, skipRequested = false, swallowClickAt = -Infinity;
+let photoOk = null, skipRequested = false, swallowClick = false;
 
 // fonts + photo, so the autofocus lands on something; never wait more than 2.5 s
 function preload() {
@@ -154,20 +154,23 @@ async function runIntro(remember) {
   dispatch({ type: 'INTRO_DONE' });
 }
 
-// any key or press skips the opening — and is swallowed, so nothing underneath fires
+// any key or press skips the opening — and is swallowed, so nothing underneath fires.
+// A skipping press also swallows its own click (preventDefault on pointerdown doesn't
+// cancel click); every new press resets that, however slowly the click arrives.
 function skipIntro(e) {
+  if (e.type === 'pointerdown') swallowClick = false;
   if (state?.mode !== 'intro' || e.target.closest?.('#replay')) return;
   e.preventDefault();
   e.stopPropagation();
-  if (e.type === 'pointerdown') swallowClickAt = performance.now();
+  if (e.type === 'pointerdown') swallowClick = true;
   skipRequested = true;
   motion.finish();
 }
 addEventListener('keydown', skipIntro, true);
 addEventListener('pointerdown', skipIntro, true);
 addEventListener('click', e => {
-  if (performance.now() - swallowClickAt > 600) return;
-  swallowClickAt = -Infinity;
+  if (!swallowClick) return;
+  swallowClick = false;
   e.preventDefault();
   e.stopPropagation();
 }, true);
